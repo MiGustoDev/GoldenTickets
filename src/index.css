@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-migusto-crema bg-migusto-tierra-oscuro font-sans;
+  }
+
+  ::selection {
+    @apply bg-migusto-rojo text-white;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-migusto-tierra-oscuro;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-migusto-tierra-claro rounded-full hover:bg-migusto-rojo transition-colors;
+  }
+}
+
+@layer components {
+  .premium-gradient {
+    @apply bg-gradient-to-br from-migusto-tierra via-migusto-tierra-oscuro to-migusto-tierra;
+  }
+
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-premium;
+  }
+
+  .text-gold-gradient {
+    @apply bg-gradient-to-r from-migusto-dorado via-migusto-dorado-bright to-migusto-dorado bg-clip-text text-transparent;
+  }
+}
+
+@keyframes twinkle-hyper {
+
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.6);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+.animate-twinkle-hyper {
+  animation: twinkle-hyper var(--twinkle-duration, 2.5s) ease-in-out infinite;
+}
