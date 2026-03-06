@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { UserPlus, CheckCircle2, Loader2, AlertCircle, CreditCard, Ticket } from 'lucide-react';
+import { UserPlus, CheckCircle2, Loader2, AlertCircle, CreditCard, Ticket, Sparkles, Award } from 'lucide-react';
 import { supabase, type Registro, type Ticket as TicketData } from '../lib/supabase';
 
 type RegisterForm = {
@@ -135,11 +135,49 @@ export default function Register() {
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center mb-16">
           <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="inline-flex p-5 rounded-3xl bg-migusto-rojo/10 border border-migusto-rojo/20 mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-center gap-4 md:gap-6 mb-8"
           >
-            <UserPlus className="h-14 w-14 text-migusto-rojo" />
+            {/* Bronce */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-col items-center p-5 rounded-2xl bg-gradient-to-br from-[#4d3326] to-[#2d1e16] border border-[#CD7F32]/20 w-28 md:w-32"
+            >
+              <div className="p-3 rounded-full bg-[#CD7F32]/10 border border-[#CD7F32]/20 mb-3">
+                <Award className="h-8 w-8 md:h-10 md:w-10 text-[#CD7F32]" />
+              </div>
+              <h3 className="text-lg font-black text-[#CD7F32] uppercase tracking-tighter">Bronce</h3>
+              <div className="h-[2px] w-8 bg-[#CD7F32]/40 mt-2"></div>
+            </motion.div>
+            {/* Plata */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col items-center p-5 rounded-2xl bg-gradient-to-br from-[#4a4a4a] to-[#1a1a1a] border border-white/10 w-28 md:w-32"
+            >
+              <div className="p-3 rounded-full bg-white/5 border border-white/10 mb-3">
+                <Award className="h-8 w-8 md:h-10 md:w-10 text-[#C0C0C0]" />
+              </div>
+              <h3 className="text-lg font-black text-[#C0C0C0] uppercase tracking-tighter">Plata</h3>
+              <div className="h-[2px] w-8 bg-white/30 mt-2"></div>
+            </motion.div>
+            {/* Oro */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col items-center p-5 rounded-2xl bg-gradient-to-br from-[#4d3d00] to-[#1a1500] border border-migusto-dorado/30 w-28 md:w-32"
+            >
+              <div className="p-3 rounded-full bg-migusto-dorado/10 border border-migusto-dorado/20 mb-3">
+                <Award className="h-8 w-8 md:h-10 md:w-10 text-migusto-oro" />
+              </div>
+              <h3 className="text-lg font-black text-migusto-oro uppercase tracking-tighter">Oro</h3>
+              <div className="h-[2px] w-8 bg-migusto-oro/40 mt-2"></div>
+            </motion.div>
           </motion.div>
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-migusto-crema tracking-tight">
             Registro y <span className="text-migusto-rojo italic">Canje</span>
@@ -151,7 +189,7 @@ export default function Register() {
           <motion.div
             initial={{ x: -30, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="glass-card p-10 rounded-[2.5rem] relative group"
+            className="glass-card p-10 rounded-[2.5rem] relative"
           >
             <h2 className="text-3xl font-serif font-bold text-migusto-dorado-bright mb-8">Datos del Titular</h2>
 
@@ -171,7 +209,7 @@ export default function Register() {
                   <CreditCard className="h-5 w-5 text-migusto-dorado-bright flex-shrink-0 mt-0.5" />
                   <div className="text-[10px] text-migusto-crema/60 uppercase tracking-widest font-black">
                     <p className="text-migusto-dorado-bright mb-1">Requisito:</p>
-                    <p>Ticket validado en sucursal</p>
+                    <p>Presentarse con DNI y ticket especial</p>
                   </div>
                 </div>
               </div>
@@ -185,7 +223,7 @@ export default function Register() {
                     type="text"
                     {...register('nombre', { required: 'Nombre es requerido' })}
                     className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-rojo/50 transition-all font-medium placeholder:text-white/5"
-                    placeholder="Juan"
+                    placeholder="Leonel"
                   />
                 </div>
                 <div className="space-y-2">
@@ -194,7 +232,7 @@ export default function Register() {
                     type="text"
                     {...register('apellido', { required: 'Apellido es requerido' })}
                     className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-rojo/50 transition-all font-medium placeholder:text-white/5"
-                    placeholder="Pérez"
+                    placeholder="Messi"
                   />
                 </div>
               </div>
@@ -232,19 +270,16 @@ export default function Register() {
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full bg-migusto-rojo text-white py-5 rounded-2xl font-black text-xl shadow-premium hover:bg-migusto-rojo-claro transition-all disabled:opacity-50 flex items-center justify-center space-x-3 group overflow-hidden"
+                className="w-full bg-migusto-rojo text-white py-5 rounded-2xl font-black text-xl shadow-premium disabled:opacity-50 flex items-center justify-center space-x-3 overflow-hidden"
               >
                 {isLoading ? (
                   <Loader2 className="h-6 w-6 animate-spin" />
                 ) : (
                   <>
                     <span>Activar Membresía</span>
-                    <Ticket className="h-6 w-6 group-hover:rotate-12 transition-transform" />
+                    <Ticket className="h-6 w-6" />
                   </>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </motion.button>
             </form>
           </motion.div>
@@ -271,10 +306,10 @@ export default function Register() {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full bg-migusto-rojo/20 flex items-center justify-center text-migusto-rojo font-black">
-                          {registro.nombre[0]}{registro.apellido[0]}
+                          {registro.nombre[0]}
                         </div>
                         <span className="font-bold text-migusto-crema">
-                          {registro.nombre} {registro.apellido}
+                          {registro.nombre}
                         </span>
                       </div>
                       <span className={`text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full border ${registro.tickets.tipo === 'ORO' ? 'bg-migusto-oro/10 text-migusto-oro border-migusto-oro/20' :
@@ -308,30 +343,99 @@ export default function Register() {
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            className={`glass-card p-10 rounded-[3rem] max-w-md w-full border-2 relative overflow-hidden ${registrationResult.success ? 'border-emerald-500/30' : 'border-red-500/30'
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className={`glass-card max-w-md w-full border-2 relative overflow-hidden ${registrationResult.success
+              ? 'border-migusto-dorado/40 rounded-[2rem]'
+              : 'border-red-500/30 rounded-[3rem] p-10'
               }`}
           >
-            <div className="flex flex-col items-center text-center relative z-10">
-              {registrationResult.success ? (
-                <div className="w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-6">
-                  <CheckCircle2 className="h-12 w-12 text-emerald-500" />
+            {registrationResult.success ? (
+              <div className="relative p-10">
+                {/* Decoración de éxito */}
+                <div className="absolute inset-0 overflow-hidden rounded-[2rem] pointer-events-none">
+                  <Sparkles className="absolute top-6 left-8 h-5 w-5 text-migusto-dorado/30 animate-pulse" />
+                  <Sparkles className="absolute top-10 right-12 h-4 w-4 text-migusto-dorado/20 animate-pulse" style={{ animationDelay: '0.3s' }} />
+                  <Sparkles className="absolute bottom-20 left-12 h-4 w-4 text-migusto-dorado/25 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                  <Sparkles className="absolute bottom-16 right-10 h-5 w-5 text-migusto-dorado/30 animate-pulse" style={{ animationDelay: '0.2s' }} />
                 </div>
-              ) : (
+
+                <div className="flex flex-col items-center text-center relative z-10">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                    className="w-28 h-28 rounded-full bg-gradient-to-br from-emerald-500/20 to-migusto-dorado/20 border-2 border-migusto-dorado/40 flex items-center justify-center mb-6 shadow-premium-gold"
+                  >
+                    <CheckCircle2 className="h-14 w-14 text-emerald-400" />
+                  </motion.div>
+
+                  <motion.span
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-xs font-black text-migusto-dorado uppercase tracking-[0.4em] mb-2"
+                  >
+                    ¡Felicitaciones!
+                  </motion.span>
+
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35 }}
+                    className="text-3xl font-serif font-bold text-migusto-crema mb-3 tracking-tight"
+                  >
+                    Registro Exitoso
+                  </motion.h3>
+
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.45 }}
+                    className="text-migusto-crema/70 mb-6 leading-relaxed text-base"
+                  >
+                    Recibí tu Tarjeta Lovers virtual. Canjea 1 pack/mes en Vicente López.
+                  </motion.p>
+
+                  {registrationResult.registroId && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="w-full px-5 py-4 rounded-2xl bg-migusto-dorado/10 border border-migusto-dorado/30 mb-8"
+                    >
+                      <p className="text-[10px] font-bold text-migusto-dorado/80 uppercase tracking-widest mb-1">Tu ID de membresía</p>
+                      <p className="text-xl font-black text-migusto-dorado tracking-tighter font-mono">{registrationResult.registroId.slice(0, 8)}</p>
+                    </motion.div>
+                  )}
+
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    onClick={() => setShowModal(false)}
+                    className="w-full bg-migusto-rojo text-white py-4 rounded-2xl font-black text-lg shadow-premium"
+                  >
+                    ¡Listo!
+                  </motion.button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center text-center relative z-10">
                 <div className="w-24 h-24 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-6">
                   <AlertCircle className="h-12 w-12 text-red-400" />
                 </div>
-              )}
-              <h3 className="text-3xl font-serif font-bold text-migusto-crema mb-4 tracking-tight">
-                {registrationResult.success ? '¡Registro Exitoso!' : 'Error de Registro'}
-              </h3>
-              <p className="text-migusto-crema/60 mb-10 leading-relaxed text-lg italic">{registrationResult.message}</p>
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-full bg-migusto-rojo text-white py-5 rounded-2xl font-black text-xl hover:bg-migusto-rojo-claro transition-all shadow-premium"
-              >
-                Cerrar
-              </button>
-            </div>
+                <h3 className="text-3xl font-serif font-bold text-migusto-crema mb-4 tracking-tight">
+                  Error de Registro
+                </h3>
+                <p className="text-migusto-crema/60 mb-10 leading-relaxed text-lg italic">{registrationResult.message}</p>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="w-full bg-migusto-rojo text-white py-5 rounded-2xl font-black text-xl hover:bg-migusto-rojo-claro transition-all shadow-premium"
+                >
+                  Cerrar
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
       )}

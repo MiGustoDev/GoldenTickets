@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-24 px-4 overflow-hidden">
+      <section className="relative pt-0 pb-24 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-migusto-rojo/10 blur-[150px] rounded-full"></div>
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-migusto-dorado/10 blur-[150px] rounded-full"></div>
@@ -198,6 +198,22 @@ export default function Home() {
             El camino al <span className="text-migusto-rojo italic">Premio</span>
           </h2>
           <div className="space-y-4">
+            {/* Paso 0 - Distintivo especial */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0 }}
+              className="flex items-center space-x-6 glass-card p-6 rounded-2xl border-2 border-migusto-dorado/50 bg-gradient-to-r from-migusto-dorado/10 to-transparent hover:bg-migusto-dorado/20 transition-all group relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 text-migusto-dorado/10 text-6xl font-black">¡</div>
+              <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-migusto-dorado to-amber-700 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-migusto-dorado/30">
+                0
+              </div>
+              <p className="text-xl text-migusto-crema font-bold">{'Encontraste un ticket especial en tu pedido'}</p>
+              <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                <CheckCircle2 className="h-8 w-8 text-migusto-dorado" />
+              </div>
+            </motion.div>
             {[
               { step: 1, text: 'Presentate a la sucursal de Vicente Lopez con tu DNI fisico' },
               { step: 2, text: 'Validamos ID y DNI asociado al ticket.' },
