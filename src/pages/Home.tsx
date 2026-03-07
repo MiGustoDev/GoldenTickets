@@ -387,8 +387,16 @@ export default function Home() {
               <motion.div
                 animate={{
                   rotateY: isCardFlipped ? 180 : 0,
-                  background: tierStyles[selectedTier].bg,
-                  borderColor: tierStyles[selectedTier].border
+                  background: selectedTier === 'oro'
+                    ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
+                    : selectedTier === 'plata'
+                      ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
+                      : 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)',
+                  borderColor: selectedTier === 'oro'
+                    ? 'rgba(251, 191, 36, 0.5)' // amber-400
+                    : selectedTier === 'plata'
+                      ? 'rgba(203, 213, 225, 0.4)' // slate-300
+                      : 'rgba(217, 119, 6, 0.4)' // amber-600
                 }}
                 onClick={() => {
                   if (isRegistered) {
