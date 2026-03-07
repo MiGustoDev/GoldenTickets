@@ -600,7 +600,7 @@ export default function Home() {
               >
                 {/* Cara frontal */}
                 <div
-                  className="absolute inset-0 flex flex-col p-10 rounded-[22px] overflow-hidden"
+                  className="absolute inset-0 flex flex-col p-6 md:p-10 rounded-[22px] overflow-hidden"
                   style={{
                     backfaceVisibility: 'hidden',
                     transform: 'rotateY(0deg)',
@@ -610,13 +610,13 @@ export default function Home() {
                   {/* Overlay Confirmación removido en esta etapa */}
 
                   <div className="flex justify-between items-start w-full relative z-10">
-                    <span className={`text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
+                    <span className={`text-sm md:text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
                       Mi Gusto Lovers
                     </span>
                     <img
                       src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                       alt="Mi Gusto"
-                      className="h-14 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125"
+                      className="h-8 md:h-14 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125"
                       style={{ filter: selectedTier === 'oro' ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' : 'grayscale(1) brightness(2) drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
                     />
                   </div>
@@ -640,14 +640,14 @@ export default function Home() {
                               color: ["#fff", "#ef4444", "#ef4444", "#fff"]
                             } : { x: 0, color: "#fff" }}
                             transition={{ duration: 1 }}
-                            className={`w-full bg-transparent text-6xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none ${isValidating ? 'animate-pulse opacity-50' : ''}`}
+                            className={`w-full bg-transparent text-3xl md:text-6xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none ${isValidating ? 'animate-pulse opacity-50' : ''}`}
                           />
                         ) : (
                           <motion.span
                             key="id-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-6xl font-black font-mono tracking-[0.2em] text-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-3xl md:text-6xl font-black font-mono tracking-[0.2em] text-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {ticketId}
                           </motion.span>
@@ -662,7 +662,7 @@ export default function Home() {
                   cuando el ID ingresado en el frente es validado correctamente.
                 */}
                 <div
-                  className="absolute inset-0 flex flex-col p-10 overflow-hidden"
+                  className="absolute inset-0 flex flex-col p-6 md:p-10 overflow-hidden"
                   style={{
                     backfaceVisibility: 'hidden',
                     transform: 'rotateY(180deg)',
@@ -670,17 +670,17 @@ export default function Home() {
                   }}
                 >
                   {/* Header con Logo y Título - DORSO */}
-                  <div className="flex justify-between items-start w-full relative z-10 mb-4">
-                    <span className={`text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
+                  <div className="flex justify-between items-start w-full relative z-10 mb-2 md:mb-4">
+                    <span className={`text-sm md:text-xl font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
                       Mi Gusto Lovers
                     </span>
                     <img
                       src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                       alt="Mi Gusto"
-                      className="h-12 w-auto object-contain brightness-200 contrast-125"
+                      className="h-8 md:h-12 w-auto object-contain brightness-200 contrast-125"
                     />
                   </div>
-                  <div className="flex flex-col gap-6 flex-1 justify-center w-full">
+                  <div className="flex flex-col gap-3 md:gap-6 flex-1 justify-center w-full">
                     {/* NOMBRE Y APELLIDO - Full Width, Left Aligned */}
                     <div className="w-full">
                       <AnimatePresence mode="wait">
@@ -694,14 +694,14 @@ export default function Home() {
                             placeholder="NOMBRE Y APELLIDO"
                             value={regName}
                             onChange={handleNameChange}
-                            className="w-full bg-transparent text-5xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
+                            className="w-full bg-transparent text-2xl md:text-5xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
                           />
                         ) : (
                           <motion.span
                             key="name-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-2xl md:text-5xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {regName}
                           </motion.span>
@@ -724,14 +724,14 @@ export default function Home() {
                               value={regPhone}
                               onChange={handlePhoneChange}
                               maxLength={12}
-                              className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                              className="w-full bg-transparent text-lg md:text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                             />
                           ) : (
                             <motion.span
                               key="phone-printed"
                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                             >
                               {regPhone}
                             </motion.span>
@@ -751,14 +751,14 @@ export default function Home() {
                               value={regDni}
                               onChange={handleDniChange}
                               maxLength={10}
-                              className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                              className="w-full bg-transparent text-lg md:text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                             />
                           ) : (
                             <motion.span
                               key="dni-printed"
                               initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                               animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                              className={`block w-full text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                              className={`block w-full text-lg md:text-3xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                             >
                               {regDni}
                             </motion.span>
@@ -780,14 +780,14 @@ export default function Home() {
                             placeholder="CORREO ELECTRÓNICO"
                             value={regEmail}
                             onChange={handleEmailChange}
-                            className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
+                            className="w-full bg-transparent text-xs md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
                           />
                         ) : (
                           <motion.span
                             key="email-printed"
                             initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
                             animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
-                            className={`block w-full text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            className={`block w-full text-xs md:text-2xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
                           >
                             {regEmail}
                           </motion.span>
