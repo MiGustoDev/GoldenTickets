@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Award, CheckCircle2, ChevronDown, AlertCircle } from 'lucide-react';
 import { EpicTitle, EpicSubtitle } from '../components/EpicText';
 
@@ -77,6 +77,17 @@ export default function Home() {
   const [expMonth, setExpMonth] = useState('');
   const [expYear, setExpYear] = useState('');
   const [cardName, setCardName] = useState('');
+  const [isCardFlipped, setIsCardFlipped] = useState(false);
+
+  // Parallax configuration for the rewards section
+  const rewardsRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: rewardsRef,
+    offset: ["start end", "end start"]
+  });
+
+  const yGrid = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
+  const yContentBase = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
 
   const handleCcNumChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -98,7 +109,6 @@ export default function Home() {
       if (value.length === 2) document.getElementById('card-name')?.focus();
     }
   };
-  const [isCardFlipped, setIsCardFlipped] = useState(false);
 
   return (
     <div className="min-h-screen">
@@ -188,13 +198,17 @@ export default function Home() {
       </section>
 
       {/* Reward Cards Section - Botones clickeables */}
-      <section id="niveles-premios" className="relative py-28 px-4 overflow-hidden scroll-mt-24">
-        {/* Fondo moderno - mesh gradient + grid sutil */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      <motion.section 
+        ref={rewardsRef} 
+        id="niveles-premios" 
+        className="relative py-28 px-4 overflow-hidden scroll-mt-24"
+      >
+        {/* Fondo moderno - mesh gradient + grid sutil con Parallax */}
+        <motion.div style={{ y: yGrid }} className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent" />
+        <motion.div style={{ y: yGrid }} className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-amber-500/5 rounded-full blur-[120px] animate-glow-pulse" />
 
-        <div className="container mx-auto max-w-5xl scale-[1.15] origin-top pb-8 relative z-10">
+        <motion.div style={{ y: yContentBase }} className="container mx-auto max-w-5xl scale-[1.15] origin-top pb-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -327,16 +341,12 @@ export default function Home() {
                     <span className={`text-lg font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
                       Mi Gusto Lovers
                     </span>
-                    <Award className={`h-8 w-8 ${tierStyles[selectedTier].icon}`} />
-                  </div>
-                  
-                  {/* Chip SIM */}
-                  <div className="mt-4 mb-2">
-                    <div className="w-12 h-8 rounded-md bg-white/20 border border-white/30 backdrop-blur-sm relative overflow-hidden flex items-center justify-center">
-                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-                       <div className="w-full h-[1px] bg-white/30"></div>
-                       <div className="absolute h-full w-[1px] bg-white/30"></div>
-                    </div>
+                    <img 
+                      src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`} 
+                      alt="Mi Gusto" 
+                      className="h-10 w-auto object-contain drop-shadow-md filter grayscale brightness-200 contrast-125" 
+                      style={{ filter: selectedTier === 'oro' ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' : 'grayscale(1) brightness(2) drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+                    />
                   </div>
 
                   {/* Card Number Inputs */}
@@ -409,12 +419,9 @@ export default function Home() {
                 </div>
               </motion.div>
             </div>
-            <p className="text-center text-migusto-crema/30 text-xs mt-4 italic">
-              Molde de tarjeta · Se integrará tarjeta flipeable desde CodePen
-            </p>
           </motion.div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* Steps Section */}
       <section className="py-24 px-4 relative">
