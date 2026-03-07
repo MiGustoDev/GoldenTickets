@@ -40,12 +40,12 @@ const faqs = [
 
 // IDs válidos simulando una base de datos
 const validDatabaseIds: Record<string, TicketTier> = {
-  'OR123': 'oro',
-  'OR999': 'oro',
-  'PL456': 'plata',
-  'PL888': 'plata',
-  'BR789': 'bronce',
-  'BR777': 'bronce',
+  'MG001A': 'oro',
+  'MG999Z': 'oro',
+  'PL123B': 'plata',
+  'PL888X': 'plata',
+  'BR456C': 'bronce',
+  'BR777Y': 'bronce',
 };
 
 type TicketTier = 'oro' | 'plata' | 'bronce';
@@ -98,8 +98,8 @@ export default function Home() {
   const yContentBase = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
 
   const handleTicketIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Solo permite letras y números, máximo 5 caracteres
-    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 5);
+    // Solo permite letras y números, máximo 6 caracteres
+    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
     setTicketId(value);
     
     // Al tipear, reseteamos errores y estado de flip si existía
@@ -107,9 +107,9 @@ export default function Home() {
     if (isCardFlipped) setIsCardFlipped(false);
   };
 
-  // Efecto para validar automáticamente cuando se llega a 5 caracteres
+  // Efecto para validar automáticamente cuando se llega a 6 caracteres
   useEffect(() => {
-    if (ticketId.length === 5) {
+    if (ticketId.length === 6) {
       // Simular verificación contra base de datos
       const matchedTier = validDatabaseIds[ticketId];
       if (matchedTier) {
@@ -365,13 +365,18 @@ export default function Home() {
                   <div className="flex flex-col flex-1 justify-center items-center w-full relative z-10 pt-4">
                     {/* ID Input Only */}
                     <div className="w-full text-center">
-                      <input
+                      <motion.input
                         type="text"
-                        maxLength={5}
+                        maxLength={6}
                         value={ticketId}
                         onChange={handleTicketIdChange}
-                        placeholder="IDXXX"
-                        className={`w-full bg-transparent text-4xl font-black font-mono text-white placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center ${idError ? 'text-red-400' : ''}`}
+                        placeholder="MG000X"
+                        animate={idError ? { 
+                          x: [0, -10, 10, -10, 10, -10, 10, 0],
+                          color: ["#fff", "#ef4444", "#ef4444", "#fff"]
+                        } : { x: 0, color: "#fff" }}
+                        transition={{ duration: 1 }}
+                        className={`w-full bg-transparent text-4xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none`}
                       />
 
                     </div>
