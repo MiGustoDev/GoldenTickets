@@ -95,6 +95,7 @@ export default function Home() {
   const [regEmail, setRegEmail] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regAge, setRegAge] = useState('');
+  const [isRegistered, setIsRegistered] = useState(false);
 
   // Parallax configuration for the rewards section
   const rewardsRef = useRef<HTMLElement>(null);
@@ -136,6 +137,36 @@ export default function Home() {
       setIdError(null);
     }
   }, [ticketId]);
+
+  // --- HANDLERS PARA REGISTRO ---
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Solo letras y espacios
+    const value = e.target.value.replace(/[^a-zA-Z\sñÑáéíóúÁÉÍÓÚ]/g, '');
+    setRegName(value.toUpperCase());
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Solo números
+    const value = e.target.value.replace(/\D/g, '');
+    setRegPhone(value);
+  };
+
+  const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Solo números, máx 2 dígitos
+    const value = e.target.value.replace(/\D/g, '').slice(0, 2);
+    setRegAge(value);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // No permitir espacios en el email
+    const value = e.target.value.replace(/\s/g, '').toLowerCase();
+    setRegEmail(value);
+  };
+
+  // Validación de Email (Solo proveedores comunes)
+  const isEmailValid = /^[^\s@]+@(gmail|hotmail|yahoo|outlook|icloud)\.(com|com\.ar|es)$/.test(regEmail.toLowerCase());
+  const isFormValid = regName.length > 5 && isEmailValid && regPhone.length >= 10 && regAge.length > 0;
 
 
   return (
@@ -427,46 +458,114 @@ export default function Home() {
                   <div className="flex flex-col gap-4 flex-1 justify-center w-full">
                     {/* NOMBRE Y APELLIDO - Full Width, Left Aligned */}
                     <div className="w-full">
-                      <input
-                        type="text"
-                        placeholder="NOMBRE Y APELLIDO"
-                        value={regName}
-                        onChange={(e) => setRegName(e.target.value.toUpperCase())}
-                        className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
-                      />
+                      <AnimatePresence mode="wait">
+                        {!isRegistered ? (
+                          <motion.input
+                            key="name-input"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            type="text"
+                            placeholder="NOMBRE Y APELLIDO"
+                            value={regName}
+                            onChange={handleNameChange}
+                            className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left uppercase"
+                          />
+                        ) : (
+                          <motion.span
+                            key="name-printed"
+                            initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                            animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                            className={`block w-full text-3xl font-black font-mono tracking-tighter text-left uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                          >
+                            {regName}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                     {/* CELULAR Y EDAD - Same Row */}
                     <div className="w-full flex gap-4">
                       <div className="flex-1">
-                        <input
-                          type="tel"
-                          placeholder="11 1234-5678"
-                          value={regPhone}
-                          onChange={(e) => setRegPhone(e.target.value)}
-                          className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
-                        />
+                        <AnimatePresence mode="wait">
+                          {!isRegistered ? (
+                            <motion.input
+                              key="phone-input"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              type="tel"
+                              placeholder="11 1234-5678"
+                              value={regPhone}
+                              onChange={handlePhoneChange}
+                              className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                            />
+                          ) : (
+                            <motion.span
+                              key="phone-printed"
+                              initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                              animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                              className={`block w-full text-2xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            >
+                              {regPhone}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
                       </div>
                       <div className="w-24">
-                        <input
-                          type="text"
-                          placeholder="EDAD"
-                          value={regAge}
-                          onChange={(e) => setRegAge(e.target.value.replace(/\D/g, '').slice(0, 2))}
-                          className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
-                        />
+                        <AnimatePresence mode="wait">
+                          {!isRegistered ? (
+                            <motion.input
+                              key="age-input"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              type="text"
+                              placeholder="EDAD"
+                              value={regAge}
+                              onChange={handleAgeChange}
+                              className="w-full bg-transparent text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                            />
+                          ) : (
+                            <motion.span
+                              key="age-printed"
+                              initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                              animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                              className={`block w-full text-2xl font-black font-mono tracking-tighter text-left drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                            >
+                              {regAge}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
                       </div>
                     </div>
 
                     {/* EMAIL - Full Width, Left Aligned */}
                     <div className="w-full">
-                      <input
-                        type="email"
-                        placeholder="CORREO ELECTRÓNICO"
-                        value={regEmail}
-                        onChange={(e) => setRegEmail(e.target.value)}
-                        className="w-full bg-transparent text-xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
-                      />
+                      <AnimatePresence mode="wait">
+                        {!isRegistered ? (
+                          <motion.input
+                            key="email-input"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            type="email"
+                            placeholder="CORREO ELECTRÓNICO"
+                            value={regEmail}
+                            onChange={handleEmailChange}
+                            className="w-full bg-transparent text-xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
+                          />
+                        ) : (
+                          <motion.span
+                            key="email-printed"
+                            initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                            animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                            className={`block w-full text-xl font-black font-mono tracking-tighter text-left lowercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                          >
+                            {regEmail}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                 </div>
@@ -489,9 +588,9 @@ export default function Home() {
               )}
             </AnimatePresence>
 
-            {/* CONFIRMAR Button below the card (only when flipped) */}
+            {/* CONFIRMAR Button below the card (only when flipped and NOT registered) */}
             <AnimatePresence>
-              {isCardFlipped && (
+              {isCardFlipped && !isRegistered && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -500,11 +599,12 @@ export default function Home() {
                 >
                   <motion.button
                     type="button"
-                    disabled={!regName || !regEmail || !regPhone || !regAge}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-16 py-4 rounded-full text-lg font-black uppercase tracking-[0.3em] transition-all duration-300 shadow-2xl ${
-                      (!regName || !regEmail || !regPhone || !regAge)
+                    onClick={() => setIsRegistered(true)}
+                    disabled={!isFormValid}
+                    whileHover={isFormValid ? { scale: 1.05 } : {}}
+                    whileTap={isFormValid ? { scale: 0.95 } : {}}
+                    className={`px-8 py-3 rounded-full text-base font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl ${
+                      !isFormValid
                         ? 'bg-white/5 text-white/20 cursor-not-allowed grayscale'
                         : `bg-gradient-to-br ${tierStyles[selectedTier].gradient} text-white shadow-[0_10px_40px_rgba(0,0,0,0.4)]`
                     }`}
