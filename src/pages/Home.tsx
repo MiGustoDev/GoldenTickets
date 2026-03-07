@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Award, CheckCircle2, ChevronDown, AlertCircle } from 'lucide-react';
 import { EpicTitle, EpicSubtitle } from '../components/EpicText';
 
@@ -38,6 +38,16 @@ const faqs = [
   }
 ];
 
+// IDs válidos simulando una base de datos
+const validDatabaseIds: Record<string, TicketTier> = {
+  'OR123': 'oro',
+  'OR999': 'oro',
+  'PL456': 'plata',
+  'PL888': 'plata',
+  'BR789': 'bronce',
+  'BR777': 'bronce',
+};
+
 type TicketTier = 'oro' | 'plata' | 'bronce';
 
 const tierStyles = {
@@ -74,10 +84,8 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [selectedTier, setSelectedTier] = useState<TicketTier>('oro');
   const [ticketId, setTicketId] = useState('');
-  
   const [isCardFlipped, setIsCardFlipped] = useState(false);
-  const [showConfirmAction, setShowConfirmAction] = useState(false);
-  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [idError, setIdError] = useState<string | null>(null);
 
   // Parallax configuration for the rewards section
   const rewardsRef = useRef<HTMLElement>(null);
@@ -89,28 +97,32 @@ export default function Home() {
   const yGrid = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
   const yContentBase = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
 
-  const isFormComplete = ticketId.trim().length === 5;
-
   const handleTicketIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Solo permite letras y números, máximo 5 caracteres
     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 5);
     setTicketId(value);
-    setShowConfirmAction(false);
+    
+    // Al tipear, reseteamos errores y estado de flip si existía
+    if (idError) setIdError(null);
+    if (isCardFlipped) setIsCardFlipped(false);
   };
 
-  const handleConfirmClick = () => {
-    if (!isFormComplete) return;
-    
-    if (!showConfirmAction) {
-      // First click: show verification prompt
-      setShowConfirmAction(true);
-    } else {
-      // Second click: confirm, lock, and flip
-      setIsConfirmed(true);
-      setShowConfirmAction(false);
-      setIsCardFlipped(true);
+  // Efecto para validar automáticamente cuando se llega a 5 caracteres
+  useEffect(() => {
+    if (ticketId.length === 5) {
+      // Simular verificación contra base de datos
+      const matchedTier = validDatabaseIds[ticketId];
+      if (matchedTier) {
+         setSelectedTier(matchedTier);
+         setIsCardFlipped(true);
+         setIdError(null);
+      } else {
+         setIsCardFlipped(false);
+         setIdError('El ID ingresado no es válido o no existe.');
+      }
     }
-  };
+  }, [ticketId]);
+
 
   return (
     <div className="min-h-screen">
@@ -335,14 +347,7 @@ export default function Home() {
                   className="absolute inset-0 flex flex-col p-6"
                   style={{ backfaceVisibility: 'hidden', transform: 'rotateY(0deg)' }}
                 >
-                  {/* Overlay Confirmación */}
-                  {showConfirmAction && !isConfirmed && (
-                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-20 rounded-2xl">
-                      <AlertCircle className="w-12 h-12 text-migusto-dorado mb-3" />
-                      <h4 className="text-xl font-black text-white uppercase tracking-wider mb-2">Verificá tus datos</h4>
-                      <p className="text-sm text-white/70 mb-4">Asegurate de que la información sea correcta antes de confirmar tu Golden Ticket.</p>
-                    </div>
-                  )}
+                  {/* Overlay Confirmación removido en esta etapa */}
 
                   <div className="flex justify-between items-start w-full relative z-10">
                     <span className={`text-lg font-black uppercase tracking-widest opacity-80 ${tierStyles[selectedTier].label}`}>
@@ -365,10 +370,10 @@ export default function Home() {
                         maxLength={5}
                         value={ticketId}
                         onChange={handleTicketIdChange}
-                        disabled={isConfirmed}
                         placeholder="IDXXX"
-                        className="w-full bg-transparent text-4xl font-black font-mono text-white placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors disabled:opacity-80 disabled:cursor-default text-center"
+                        className={`w-full bg-transparent text-4xl font-black font-mono text-white placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center ${idError ? 'text-red-400' : ''}`}
                       />
+
                     </div>
                   </div>
                 </div>
@@ -385,21 +390,21 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Submit Button */}
-            <div className="mt-10 flex justify-center">
-               <button
-                 type="button"
-                 disabled={!isFormComplete || isConfirmed}
-                 onClick={handleConfirmClick}
-                 className={`px-12 py-4 rounded-full font-black uppercase tracking-widest transition-all duration-300 ${
-                   !isFormComplete || isConfirmed 
-                     ? 'bg-white/5 text-white/20 border border-white/5 cursor-not-allowed'
-                     : `bg-gradient-to-br text-white hover:brightness-110 transform hover:-translate-y-1 ${tierStyles[selectedTier].gradient} ${showConfirmAction ? 'shadow-[0_0_40px_rgba(255,255,255,0.4)] scale-105' : tierStyles[selectedTier].shadow}`
-                 }`}
-               >
-                 {isConfirmed ? 'TICKET CONFIRMADO' : showConfirmAction ? 'SÍ, CONFIRMAR TICKET' : 'CONFIRMAR'}
-               </button>
-            </div>
+            {/* Error Message below the card */}
+            <AnimatePresence>
+              {idError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="mt-6 text-center"
+                >
+                  <span className="text-red-500 text-sm font-bold uppercase tracking-[0.2em]">
+                    {idError}
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       </motion.section>
