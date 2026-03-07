@@ -412,7 +412,7 @@ export default function Home() {
                   boxShadow: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
                   y: { duration: 3, repeat: Infinity, ease: 'easeInOut' }
                 }}
-                className="group relative px-16 py-6 bg-gradient-to-br from-yellow-400 via-amber-400 to-yellow-600 text-migusto-tierra-oscuro rounded-full font-black text-2xl md:text-3xl uppercase overflow-hidden"
+                className="group relative px-10 py-4 md:px-16 md:py-6 bg-gradient-to-br from-yellow-400 via-amber-400 to-yellow-600 text-migusto-tierra-oscuro rounded-full font-black text-xl md:text-3xl uppercase overflow-hidden"
               >
                 {/* Shimmer continuo */}
                 <div
