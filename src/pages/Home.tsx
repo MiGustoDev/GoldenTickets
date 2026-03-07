@@ -143,7 +143,7 @@ export default function Home() {
                   boxShadow: { duration: 1.5, repeat: Infinity, ease: 'easeInOut' },
                   y: { duration: 2, repeat: Infinity, ease: 'easeInOut' }
                 }}
-                className="group relative px-16 py-6 bg-gradient-to-br from-yellow-400 via-amber-400 to-yellow-600 text-migusto-tierra-oscuro rounded-3xl font-black text-2xl md:text-3xl overflow-hidden"
+                className="group relative px-16 py-6 bg-gradient-to-br from-yellow-400 via-amber-400 to-yellow-600 text-migusto-tierra-oscuro rounded-full font-black text-2xl md:text-3xl uppercase overflow-hidden"
               >
                 {/* Shimmer continuo */}
                 <div
@@ -154,10 +154,10 @@ export default function Home() {
                   }}
                 />
                 {/* Borde dorado brillante */}
-                <div className="absolute inset-0 rounded-3xl border-2 border-yellow-300/80 group-hover:border-yellow-200 group-hover:shadow-[0_0_30px_rgba(255,215,0,0.5)] transition-all duration-300" />
+                <div className="absolute inset-0 rounded-full border-2 border-yellow-300/80 group-hover:border-yellow-200 group-hover:shadow-[0_0_30px_rgba(255,215,0,0.5)] transition-all duration-300" />
                 {/* Efecto de profundidad */}
-                <div className="absolute inset-x-4 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="relative z-10 drop-shadow-sm tracking-tight">Canjeá tu Cupón</span>
+                <div className="absolute inset-x-4 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent rounded-b-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="relative z-10 drop-shadow-sm tracking-tight">CANJEÁ TU CUPÓN</span>
               </motion.button>
             </motion.div>
           </div>
@@ -190,7 +190,10 @@ export default function Home() {
               <motion.button
                 key={tier}
                 type="button"
-                onClick={() => setSelectedTier(tier)}
+                onClick={() => {
+                  setSelectedTier(tier);
+                  document.getElementById('tarjeta-previa')?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
@@ -251,9 +254,10 @@ export default function Home() {
 
           {/* Golden Ticket - Molde con inputs */}
           <motion.div
+            id="tarjeta-previa"
+            className="max-w-md mx-auto scroll-mt-32"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-md mx-auto"
           >
             <h3 className="text-xl font-serif font-bold text-migusto-crema text-center mb-6">
               Tu Golden Ticket
