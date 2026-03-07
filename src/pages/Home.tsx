@@ -378,23 +378,20 @@ export default function Home() {
               <motion.div
                 animate={{
                   rotateY: isCardFlipped ? 180 : 0,
-                  background: selectedTier === 'oro'
-                    ? 'linear-gradient(to bottom right, #6b5800, #c5a059, #4d3d00)'
-                    : selectedTier === 'plata'
-                      ? 'linear-gradient(to bottom right, #4a4a4a, #C0C0C0, #1a1a1a)'
-                      : 'linear-gradient(to bottom right, #6b3e26, #CD7F32, #2d1e16)',
-                  borderColor: selectedTier === 'oro'
-                    ? 'rgba(251, 191, 36, 0.5)' // amber-400
-                    : selectedTier === 'plata'
-                      ? 'rgba(203, 213, 225, 0.4)' // slate-300
-                      : 'rgba(217, 119, 6, 0.4)' // amber-600
+                  background: tierStyles[selectedTier].bg,
+                  borderColor: tierStyles[selectedTier].border
+                }}
+                onClick={() => {
+                  if (isRegistered) {
+                    setIsCardFlipped(!isCardFlipped);
+                  }
                 }}
                 transition={{
                   rotateY: { duration: 0.6, ease: 'easeInOut' },
                   background: { duration: 0.8, ease: 'easeOut' },
                   borderColor: { duration: 0.8, ease: 'easeOut' }
                 }}
-                className={`relative w-full max-w-sm mx-auto aspect-[1.586/1] rounded-2xl border-2`}
+                className={`relative w-full max-w-sm mx-auto aspect-[1.586/1] rounded-2xl border-2 ${isRegistered ? 'cursor-pointer' : ''}`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {/* Cara frontal */}
@@ -424,20 +421,33 @@ export default function Home() {
                   <div className="flex flex-col flex-1 justify-center items-center w-full relative z-10 pt-4">
                     {/* ID Input Only */}
                     <div className="w-full text-center">
-                      <motion.input
-                        type="text"
-                        maxLength={6}
-                        value={ticketId}
-                        onChange={handleTicketIdChange}
-                        placeholder="MG000X"
-                        animate={idError ? { 
-                          x: [0, -10, 10, -10, 10, -10, 10, 0],
-                          color: ["#fff", "#ef4444", "#ef4444", "#fff"]
-                        } : { x: 0, color: "#fff" }}
-                        transition={{ duration: 1 }}
-                        className={`w-full bg-transparent text-4xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none`}
-                      />
-
+                      <AnimatePresence mode="wait">
+                        {!isRegistered ? (
+                          <motion.input
+                            key="id-input"
+                            type="text"
+                            maxLength={6}
+                            value={ticketId}
+                            onChange={handleTicketIdChange}
+                            placeholder="MG000X"
+                            animate={idError ? { 
+                              x: [0, -10, 10, -10, 10, -10, 10, 0],
+                              color: ["#fff", "#ef4444", "#ef4444", "#fff"]
+                            } : { x: 0, color: "#fff" }}
+                            transition={{ duration: 1 }}
+                            className={`w-full bg-transparent text-4xl font-black font-mono placeholder:text-white/30 focus:outline-none tracking-[0.2em] transition-colors text-center shadow-none border-none`}
+                          />
+                        ) : (
+                          <motion.span
+                            key="id-printed"
+                            initial={{ scale: 1.2, opacity: 0, filter: 'brightness(2)' }}
+                            animate={{ scale: 1, opacity: 1, filter: 'brightness(1)' }}
+                            className={`block w-full text-4xl font-black font-mono tracking-[0.2em] text-center drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] ${tierStyles[selectedTier].label}`}
+                          >
+                            {ticketId}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                 </div>
