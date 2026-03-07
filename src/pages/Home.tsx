@@ -190,7 +190,14 @@ export default function Home() {
             'BRONCE': 'bronce'
           };
 
-          setSelectedTier(tierMap[data.tipo] || 'oro');
+          const ticketTier = tierMap[data.tipo] || 'oro';
+
+          // 3.1 Validación de Nivel: El ticket debe coincidir con el seleccionado
+          if (ticketTier !== selectedTier) {
+            setIdError('Este ID no pertenece a este nivel de premio');
+            return;
+          }
+
           setIsCardFlipped(true);
           setIdError(null);
         } catch (err) {
@@ -419,16 +426,20 @@ export default function Home() {
                 key={tier}
                 type="button"
                 onClick={() => {
+                  if (isCardFlipped || isRegistered) return;
                   setSelectedTier(tier);
+                  setTicketId('');
+                  setIdError(null);
                   document.getElementById('tarjeta-previa')?.scrollIntoView({ behavior: 'smooth' });
                 }}
+                disabled={isCardFlipped || isRegistered}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                whileHover={{ scale: 1.1, y: -12 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={(!isCardFlipped && !isRegistered) ? { scale: 1.1, y: -12 } : {}}
+                whileTap={(!isCardFlipped && !isRegistered) ? { scale: 0.95 } : {}}
                 className={`group relative flex flex-col items-center rounded-[2.5rem] ${tier === 'oro' ? 'w-48 md:w-56 p-10' : tier === 'plata' ? 'w-40 md:w-44 p-7' : 'w-32 md:w-36 p-5'
-                  } overflow-hidden transition-all duration-700 premium-border ${selectedTier === tier
+                  } overflow-hidden transition-all duration-700 premium-border ${(isCardFlipped || isRegistered) ? 'opacity-40 grayscale-[0.5] cursor-not-allowed' : ''} ${selectedTier === tier
                     ? `animate-float ${tierStyles[tier].shadow} bg-gradient-to-br ${tierStyles[tier].gradient} border-2 ${tierStyles[tier].border}`
                     : 'bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/30'
                   }`}
@@ -752,7 +763,7 @@ export default function Home() {
                   exit={{ opacity: 0, y: -10 }}
                   className="mt-6 text-center"
                 >
-                  <p className="text-white bg-red-500/80 backdrop-blur-md px-6 py-2 rounded-full text-sm font-bold inline-block border border-red-400/50 shadow-lg">
+                  <p className="text-red-500 text-sm font-black uppercase tracking-wider drop-shadow-sm">
                     {idError}
                   </p>
                 </motion.div>
