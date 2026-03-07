@@ -222,14 +222,52 @@ export default function Home() {
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Solo números
-    const value = e.target.value.replace(/\D/g, '');
-    setRegPhone(value);
+    let value = e.target.value.replace(/\D/g, '');
+
+    // Limitar a 10 dígitos
+    if (value.length > 10) value = value.slice(0, 10);
+
+    // Aplicar máscara: XX XXXX-XXXX
+    let formattedValue = '';
+    if (value.length > 0) {
+      formattedValue = value.slice(0, 2);
+      if (value.length > 2) {
+        formattedValue += ' ' + value.slice(2, 6);
+        if (value.length > 6) {
+          formattedValue += '-' + value.slice(6, 10);
+        }
+      }
+    }
+
+    setRegPhone(formattedValue);
   };
 
   const handleDniChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Solo números, máx 9 dígitos (DNI)
-    const value = e.target.value.replace(/\D/g, '').slice(0, 9);
-    setRegDni(value);
+    // Solo números
+    let value = e.target.value.replace(/\D/g, '');
+
+    // Limitar a 8 dígitos (standard DNI argentino)
+    if (value.length > 8) value = value.slice(0, 8);
+
+    // Aplicar máscara: XX-XXX-XXX o X-XXX-XXX dependiendo el largo
+    let formattedValue = '';
+    if (value.length > 0) {
+      if (value.length <= 7) {
+        // Formato para 7 dígitos: X-XXX-XXX
+        if (value.length <= 1) {
+          formattedValue = value;
+        } else if (value.length <= 4) {
+          formattedValue = value.slice(0, 1) + '-' + value.slice(1);
+        } else {
+          formattedValue = value.slice(0, 1) + '-' + value.slice(1, 4) + '-' + value.slice(4);
+        }
+      } else {
+        // Formato para 8 dígitos: XX-XXX-XXX
+        formattedValue = value.slice(0, 2) + '-' + value.slice(2, 5) + '-' + value.slice(5);
+      }
+    }
+
+    setRegDni(formattedValue);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -680,6 +718,7 @@ export default function Home() {
                               placeholder="11 1234-5678"
                               value={regPhone}
                               onChange={handlePhoneChange}
+                              maxLength={12}
                               className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                             />
                           ) : (
@@ -706,6 +745,7 @@ export default function Home() {
                               placeholder="DNI"
                               value={regDni}
                               onChange={handleDniChange}
+                              maxLength={10}
                               className="w-full bg-transparent text-3xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                             />
                           ) : (
@@ -981,6 +1021,15 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Final Footer Credits */}
+      <footer className="py-12 border-t border-white/5 bg-black/40 backdrop-blur-sm">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-white/40 text-sm font-medium tracking-tight">
+            © Desarrollado por el <span className="text-white/60 font-bold border-b border-white/20 pb-0.5">Departamento de Sistemas</span> de Mi Gusto | Todos los derechos reservados.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
