@@ -26,7 +26,7 @@ La aplicación está pensada para:
   - Registro del ganador (nombre, email, teléfono, DNI) en Supabase (`registros`) y marcado del ticket como usado.
   - Secciones informativas: pasos de la experiencia, FAQs, términos y condiciones, ubicación de la sucursal.
 
-![Demo landing y canje](@1MGactivos/GoldenTickets/public/MGticketsDemo.gif)
+![Demo landing y canje](public/MGticketsDemo.gif)
 
 
 - **`/validacion` – Validación de beneficio por DNI**
@@ -41,7 +41,7 @@ La aplicación está pensada para:
     - Estado: **vigente / vencido**, **con o sin canje este mes**.
   - Permite **registrar un canje** (inserta un registro en `canjes`).
 
-![Demo validador por DNI](@1MGactivos/GoldenTickets/public/ValidacionDemo.png)
+![Demo validador por DNI](public/ValidacionDemo.png)
 ---
 
 
