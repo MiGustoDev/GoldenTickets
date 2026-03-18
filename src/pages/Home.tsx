@@ -364,28 +364,16 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, ease: "easeOut" }}
-                src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
-                alt="Mi Gusto"
-                className="h-32 md:h-48 w-auto mb-4"
-              />
-              <EpicTitle
-                text="Experience"
-                goldWord="Experience"
-                className="text-6xl md:text-8xl"
-                delay={0.5}
+                src={`${import.meta.env.BASE_URL}Logo_MiGusto_Experience.png`}
+                alt="Mi Gusto Experience"
+                className="h-48 md:h-72 w-auto mb-4"
               />
             </div>
             <div className="mb-12">
               <EpicSubtitle
-                text="¡Bienvenidos!"
-                className="text-2xl md:text-5xl font-black block mb-4"
+                text="DISFRUTÁ DE TU BENEFICIO EXCLUSIVO"
+                className="text-xl md:text-4xl font-black block mb-4 tracking-tight md:tracking-tighter"
                 delay={0.4}
-              />
-              <EpicSubtitle
-                text="Sé parte del exclusivo club Mi Gusto Lovers"
-                goldWord="Lovers"
-                className="text-lg md:text-2xl max-w-2xl mx-auto block opacity-80"
-                delay={0.8}
               />
             </div>
 
