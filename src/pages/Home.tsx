@@ -2,47 +2,13 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import {
   CheckCircle2,
-  ChevronDown,
   AlertCircle,
   MapPin
 } from 'lucide-react';
 import { EpicSubtitle } from '../components/EpicText';
 import { supabase } from '../lib/supabase';
 
-const faqs = [
-  {
-    question: '¿En mi Pack de 12 recibí un cupón, qué hago?',
-    answer: 'Debes canjearlo en esta web e ir por primera vez a canjear tu primer pack 12 gratis, ahí recibirás tu Lover Ticket para poder retirar tu pack cada mes.'
-  },
-  {
-    question: '¿Cómo canjeo cada mes?',
-    answer: 'Presencial con DNI y Tarjeta Lovers.'
-  },
-  {
-    question: '¿Qué pasa si pierdo el ticket?',
-    answer: 'Se considera perdido, sin reposición.'
-  },
-  {
-    question: '¿Hasta cuándo canjeo?',
-    answer: 'Último día del mes, o caduca.'
-  },
-  {
-    question: '¿Dónde?',
-    answer: 'Solo disponible en nuestra sucursal de Vicente López.'
-  },
-  {
-    question: '¿Por app/web?',
-    answer: 'No, solo presencial.'
-  },
-  {
-    question: '¿Otro puede usarlo?',
-    answer: 'No, personal e intransferible.'
-  },
-  {
-    question: '¿Puedo regalarlo?',
-    answer: 'Solo antes de registrar datos, se debe registrar a nombre de la persona que recibirá el regalo.'
-  }
-];
+
 
 // --- CONFIGURACIÓN DE DATOS ---
 
@@ -79,7 +45,6 @@ const tierStyles = {
 };
 
 export default function Home() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [selectedTier, setSelectedTier] = useState<TicketTier>('oro');
   const [ticketId, setTicketId] = useState('');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
@@ -958,51 +923,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section id="faq" className="py-24 px-4 bg-black/10 backdrop-blur-sm relative scroll-mt-24">
-        <div className="container mx-auto max-w-4xl relative">
-          <h2 className="text-4xl font-serif text-center mb-16 text-migusto-crema">
-            Preguntas <span className="text-gold-gradient italic">Frecuentes</span>
-          </h2>
-          <div className="space-y-3">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="overflow-hidden relative"
-              >
-                <button
-                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                  className={`w-full px-8 py-5 text-left flex items-center justify-between transition-all rounded-2xl ${openFaq === index ? 'bg-migusto-rojo text-white' : 'glass-card text-migusto-crema hover:bg-white/10'
-                    }`}
-                >
-                  <span className="text-lg font-bold">{faq.question}</span>
-                  <ChevronDown
-                    className={`h-6 w-6 transition-transform duration-500 ${openFaq === index ? 'transform rotate-180' : ''
-                      }`}
-                  />
-                </button>
-                <motion.div
-                  initial={false}
-                  animate={{ height: openFaq === index ? 'auto' : 0, opacity: openFaq === index ? 1 : 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="px-8 py-6 text-migusto-crema/70 leading-relaxed text-lg italic flex flex-col items-start gap-4">
-                    {faq.answer}
-                    {faq.question === '¿Dónde?' && (
-                      <button
-                        onClick={() => document.getElementById('ubicacion-sucursal')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="text-xs font-black uppercase tracking-widest px-4 py-2 bg-white/10 hover:bg-migusto-rojo rounded-full transition-all border border-white/10 hover:border-transparent inline-block"
-                      >
-                        Ver ubicación
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
 
 

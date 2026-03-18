@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   return (
@@ -19,35 +20,21 @@ export default function Navbar() {
           </a>
 
           <div className="hidden md:flex items-center">
-            <button
-              onClick={() => {
-                const faqElement = document.getElementById('faq');
-                if (faqElement) {
-                  faqElement.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  window.location.href = `${import.meta.env.BASE_URL}#faq`;
-                }
-              }}
+            <Link
+              to="/faq"
               className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase hover:opacity-80 transition-opacity"
             >
               FAQ
-            </button>
+            </Link>
           </div>
 
           <div className="md:hidden flex items-center">
-            <button
-              onClick={() => {
-                const faqElement = document.getElementById('faq');
-                if (faqElement) {
-                  faqElement.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  window.location.href = `${import.meta.env.BASE_URL}#faq`;
-                }
-              }}
+            <Link
+              to="/faq"
               className="text-[10px] font-black text-gold-gradient tracking-[0.3em] uppercase hover:opacity-80 transition-opacity"
             >
               FAQ
-            </button>
+            </Link>
           </div>
         </div>
       </div>
