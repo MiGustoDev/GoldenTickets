@@ -890,7 +890,7 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 px-4 bg-black/10 backdrop-blur-sm relative">
+      <section id="faq" className="py-24 px-4 bg-black/10 backdrop-blur-sm relative scroll-mt-24">
         <div className="container mx-auto max-w-4xl relative">
           <h2 className="text-4xl font-serif text-center mb-16 text-migusto-crema">
             Preguntas <span className="text-gold-gradient italic">Frecuentes</span>
