@@ -849,55 +849,111 @@ export default function Home() {
         </motion.div>
       </motion.section>
 
-      {/* Steps Section */}
-      <section className="py-24 px-4 relative">
-        <div className="container mx-auto max-w-4xl relative">
-          <h2 className="text-4xl font-serif text-center mb-16 text-migusto-crema">
-            El camino a la <span className="text-migusto-rojo italic">experiencia</span>
+      {/* EL CAMINO A LA EXPERIENCIA - Unified Section */}
+      <section className="py-24 px-4 relative" id="camino-experiencia">
+        <div className="container mx-auto max-w-[1400px] relative">
+          <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-16 tracking-tight text-center md:text-left">
+            El camino a la <span className="text-migusto-dorado">experiencia</span>
           </h2>
-          <div className="space-y-4 relative">
-            {[
-              { step: 1, text: 'Encontraste un ticket especial en tu pedido' },
-              { step: 2, text: 'Validamos ID y DNI asociado al ticket.' },
-              { step: 3, text: 'Entregamos tu Tarjeta Lovers' },
-              { step: 4, text: 'Disfrutá tu canje mensual' }
-            ].map(({ step, text }, idx) => (
-              <motion.div
-                key={step}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{
-                  opacity: 1,
-                  x: 0,
-                  backgroundColor: "rgba(255,255,255,0.05)"
-                }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{
-                  delay: idx * 0.15,
-                  duration: 0.8,
-                  ease: "easeOut"
-                }}
-                className="flex items-center space-x-6 glass-card p-6 rounded-2xl transition-all group relative overflow-hidden"
-              >
-                <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-migusto-rojo to-migusto-rojo-oscuro rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg ring-4 ring-migusto-rojo/20">
-                  {step}
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-stretch">
+            
+            {/* Columna 1: Pasos */}
+            <div className="flex flex-col gap-4 md:gap-6 lg:col-span-3">
+              {[
+                { step: 1, text: 'Encontraste un ticket especial en tu pedido' },
+                { step: 2, text: 'Validamos ID y asociamos tu DNI al ticket' },
+                { step: 3, text: 'Disfrutá tu canje mensual' }
+              ].map(({ step, text }, idx) => (
+                <motion.div
+                  key={step}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.15, duration: 0.5 }}
+                  className="flex flex-col p-6 md:p-8 rounded-[2rem] glass-card relative overflow-hidden group h-full justify-center"
+                >
+                  <div className="w-16 h-16 bg-[#1a1a1a] rounded-2xl flex items-center justify-center mb-4 md:mb-6 border border-white/5 shrink-0">
+                    <span className="text-amber-400 font-black text-3xl md:text-4xl">{step}</span>
+                  </div>
+                  <p className="text-white/90 text-lg md:text-xl font-medium leading-tight">{text}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Columna 2: Reglas (Alertas) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="flex flex-col p-6 md:p-8 rounded-[2rem] glass-card relative overflow-hidden h-full lg:col-span-4"
+            >
+              <div className="w-16 h-16 bg-[#1a1a1a] rounded-2xl flex items-center justify-center mb-8 border border-white/5 shrink-0">
+                <AlertCircle className="h-8 w-8 text-amber-500" />
+              </div>
+              <div className="flex flex-col flex-1 justify-around gap-6">
+                {[
+                  { title: 'Personal e Intransferible', text: 'Solo válido para el titular registrado' },
+                  { title: 'Pérdida sin Reposición', text: 'No se emiten duplicados de tarjeta' },
+                  { title: 'No Acumulable', text: 'Un premio por persona' },
+                  { title: 'Canje Mensual', text: 'Un pack de 12 empanadas por mes' }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex flex-col text-left">
+                    <h3 className="text-base md:text-lg font-black text-white uppercase tracking-tight mb-2">{item.title}</h3>
+                    <p className="text-sm md:text-base text-white/50 leading-tight">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Columna 3: Mapa */}
+            <motion.div
+              id="ubicacion-sucursal"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="flex flex-col h-full scroll-mt-32 relative lg:col-span-5"
+            >
+              <h3 className="absolute -top-8 md:-top-10 left-0 right-0 text-white font-bold text-center w-full leading-tight text-sm md:text-base uppercase tracking-wider">
+                Beneficio exclusivo de Vicente Lopez
+              </h3>
+
+              <div className="p-6 md:p-8 rounded-[2rem] glass-card w-full flex-1 flex flex-col items-center">
+
+                {/* Mapa Real */}
+                <div className="w-full relative overflow-hidden rounded-3xl border border-white/10 flex-1 min-h-[160px] md:min-h-[200px] mb-6 shadow-inner bg-black/50">
+                  <iframe 
+                    src="https://maps.google.com/maps?q=Mi%20Gusto,%20Av.%20del%20Libertador%20962,%20Vicente%20L%C3%B3pez&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style={{border:0}} 
+                    allowFullScreen 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  ></iframe>
                 </div>
-                <p className="text-xl text-migusto-crema/90 font-medium">{text}</p>
-                <div className="ml-auto">
-                  <motion.div
-                    initial={{ color: "#ef4444", opacity: 0.4 }}
-                    whileInView={{ color: "#22c55e", opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      delay: (idx * 0.15) + 0.4,
-                      duration: 0.6,
-                      ease: "easeOut"
-                    }}
+
+                <div className="w-full mt-auto">
+                  <p className="text-white/80 font-medium mb-5 text-center text-sm md:text-base">
+                    Av. del Libertador 962, Vte. Lopez.
+                  </p>
+
+                  <a
+                    href="https://www.google.com/maps?q=Mi+Gusto+Vicente+Lopez+Av.+del+Libertador+962"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-white/5 hover:bg-amber-500 hover:text-black text-white rounded-full transition-all duration-300 border border-white/10 hover:border-transparent font-black tracking-widest text-xs uppercase"
                   >
-                    <CheckCircle2 className="h-8 w-8" />
-                  </motion.div>
+                    <MapPin className="h-4 w-4" />
+                    <span>Abrir Mapa</span>
+                  </a>
                 </div>
-              </motion.div>
-            ))}
+              </div>
+            </motion.div>
+
           </div>
         </div>
       </section>
@@ -950,82 +1006,7 @@ export default function Home() {
 
 
 
-      {/* Terms Section */}
-      <section className="pt-16 pb-8 md:py-16 px-4 relative">
-        <div className="container mx-auto max-w-6xl relative">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {[
-              { icon: AlertCircle, title: 'Personal e Intransferible', text: 'Solo válido para el titular registrado' },
-              { icon: AlertCircle, title: 'No Acumulable', text: 'Un premio por persona' },
-              { icon: AlertCircle, title: 'Canje Mensual', text: 'Un pack de 12 empanadas por mes' },
-              { icon: AlertCircle, title: 'Pérdida sin Reposición', text: 'No se emiten duplicados de tarjeta' }
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="text-center group"
-              >
-                <div className="inline-flex p-3 md:p-4 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 mb-3 md:mb-6 group-hover:bg-migusto-rojo/10 group-hover:border-migusto-rojo/30 transition-all">
-                  <item.icon className="h-7 w-7 md:h-10 md:w-10 text-migusto-rojo" />
-                </div>
-                <h3 className="text-xs md:text-lg font-black text-migusto-crema mb-1 md:mb-3 uppercase tracking-tighter">{item.title}</h3>
-                <p className="text-[10px] md:text-sm text-migusto-crema/40 leading-tight md:leading-relaxed h-8 md:h-auto flex items-center justify-center underline-offset-2">{item.text}</p>
-              </div>
-            ))}
-          </div>
 
-          {/* Bloque de Ubicación */}
-          <motion.div
-            id="ubicacion-sucursal"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="mt-20 flex flex-col items-center scroll-mt-32"
-          >
-            <div className="glass-card p-10 rounded-[2.5rem] border border-white/10 max-w-2xl w-full text-center relative overflow-hidden group">
-              <div className="absolute inset-0 bg-migusto-rojo/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              <div className="relative z-10">
-                {/* Wireframe de Mapa */}
-                <div className="mb-8 relative group/map overflow-hidden rounded-3xl border border-white/10 aspect-video bg-black/40">
-                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-[size:20px_20px]" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-migusto-rojo/20 blur-2xl rounded-full animate-pulse" />
-                      <MapPin className="h-16 w-16 text-migusto-rojo relative z-10 filter drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
-                    </div>
-                  </div>
-                  {/* Sutiles líneas de mapa ficticias */}
-                  <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 100 100">
-                    <path d="M0 20 L100 20 M0 50 L100 50 M0 80 L100 80 M20 0 L20 100 M50 0 L50 100 M80 0 L80 100" stroke="white" strokeWidth="0.5" fill="none" />
-                  </svg>
-                  <div className="absolute bottom-4 left-4 right-4 p-3 bg-black/60 backdrop-blur-md rounded-xl border border-white/5 flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                      <span className="text-[10px] font-black uppercase tracking-tight text-white/70">Sucursal Activa</span>
-                    </div>
-                    <span className="text-[8px] font-medium text-white/30 uppercase tracking-widest leading-none text-right">Vicente López<br />Libertador 962</span>
-                  </div>
-                </div>
-
-                <p className="text-lg text-migusto-crema/60 mb-8 leading-relaxed">
-                  Esta promoción es válida únicamente en <br />
-                  <span className="text-white font-black">Mi Gusto Vicente López</span><br />
-                  <span className="text-migusto-rojo italic font-medium">Av. del Libertador 962</span>
-                </p>
-
-                <a
-                  href="https://www.google.com/maps?q=Mi+Gusto+Vicente+Lopez+Av.+del+Libertador+962"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-3 px-10 py-4 bg-white/5 hover:bg-migusto-rojo text-white rounded-full transition-all duration-300 border border-white/10 hover:border-transparent font-black tracking-widest text-sm uppercase group/btn"
-                >
-                  <MapPin className="h-4 w-4 group-hover:animate-bounce" />
-                  <span>Abrir Mapa</span>
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
 
     </div>
