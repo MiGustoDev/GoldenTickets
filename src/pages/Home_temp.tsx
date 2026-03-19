@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import {
@@ -11,7 +11,7 @@ import { supabase } from '../lib/supabase';
 
 
 
-// --- CONFIGURACIÓN DE DATOS ---
+// --- CONFIGURACIÃ“N DE DATOS ---
 
 type TicketTier = 'oro' | 'plata' | 'bronce' | null;
 
@@ -80,7 +80,7 @@ export default function Home() {
         if (element) {
           setTimeout(() => {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 800); // Delay más largo para asegurar renderizado completo
+          }, 800); // Delay mÃ¡s largo para asegurar renderizado completo
         }
       }
     };
@@ -131,8 +131,8 @@ export default function Home() {
 
   /**
    * Maneja el cambio en el input del ID del Ticket.
-   * - Fuerza mayúsculas.
-   * - Limita a 6 caracteres alfanuméricos.
+   * - Fuerza mayÃºsculas.
+   * - Limita a 6 caracteres alfanumÃ©ricos.
    * - Resetea estados de error y de giro al modificar.
    */
   const handleTicketIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,20 +144,20 @@ export default function Home() {
   };
 
   /**
-   * Efecto de Validación:
+   * Efecto de ValidaciÃ³n:
    * Cuando el ID llega a 6 caracteres, valida contra la base de datos de Supabase.
    */
   useEffect(() => {
     const validateTicket = async () => {
       if (ticketId.length === 10) {
-        // 1. Validación de Formato: MG + 7 caracteres + letra de nivel (G/S/B)
+        // 1. ValidaciÃ³n de Formato: MG + 7 caracteres + letra de nivel (G/S/B)
         const ticketRegex = /^MG[A-Z0-9]{7}[GSB]$/;
         if (!ticketRegex.test(ticketId)) {
-          setIdError('ID no válido');
+          setIdError('ID no vÃ¡lido');
           return;
         }
 
-        // 1.1 Validación de Letra Final (Nivel)
+        // 1.1 ValidaciÃ³n de Letra Final (Nivel)
         const lastChar = ticketId[ticketId.length - 1];
         const expectedLastChar = selectedTier === 'oro' ? 'G' : selectedTier === 'plata' ? 'S' : 'B';
         
@@ -176,17 +176,17 @@ export default function Home() {
             .single();
 
           if (error || !data) {
-            setIdError('ID no válido'); // Mantenemos el mensaje genérico si no existe
+            setIdError('ID no vÃ¡lido'); // Mantenemos el mensaje genÃ©rico si no existe
             return;
           }
 
-          // 2.2 Validación de Uso: Verificar si ya fue utilizado
+          // 2.2 ValidaciÃ³n de Uso: Verificar si ya fue utilizado
           if (data.usado) {
             setIdError('Este ticket ya fue utilizado');
             return;
           }
 
-          // 3. Mapeo de Categoría
+          // 3. Mapeo de CategorÃ­a
           const tierMap: Record<string, TicketTier> = {
             'ORO': 'oro',
             'PLATA': 'plata',
@@ -195,7 +195,7 @@ export default function Home() {
 
           const ticketTier = tierMap[data.tipo] || 'oro';
 
-          // 3.1 Validación de Seguridad Extra: El ticket en DB debe coincidir con el seleccionado
+          // 3.1 ValidaciÃ³n de Seguridad Extra: El ticket en DB debe coincidir con el seleccionado
           if (ticketTier !== selectedTier) {
             setIdError('El nivel del ticket ingresado es incorrecto');
             return;
@@ -219,18 +219,18 @@ export default function Home() {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Solo letras y espacios
-    const value = e.target.value.replace(/[^a-zA-Z\sñÑáéíóúÁÉÍÓÚ]/g, '');
+    const value = e.target.value.replace(/[^a-zA-Z\sÃ±Ã‘Ã¡Ã©Ã­Ã³ÃºÃÃ‰ÃÃ“Ãš]/g, '');
     setRegName(value.toUpperCase());
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Solo números
+    // Solo nÃºmeros
     let value = e.target.value.replace(/\D/g, '');
 
-    // Limitar a 10 dígitos
+    // Limitar a 10 dÃ­gitos
     if (value.length > 10) value = value.slice(0, 10);
 
-    // Aplicar máscara: XX XXXX-XXXX
+    // Aplicar mÃ¡scara: XX XXXX-XXXX
     let formattedValue = '';
     if (value.length > 0) {
       formattedValue = value.slice(0, 2);
@@ -246,17 +246,17 @@ export default function Home() {
   };
 
   const handleDniChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Solo números
+    // Solo nÃºmeros
     let value = e.target.value.replace(/\D/g, '');
 
-    // Limitar a 8 dígitos (standard DNI argentino)
+    // Limitar a 8 dÃ­gitos (standard DNI argentino)
     if (value.length > 8) value = value.slice(0, 8);
 
-    // Aplicar máscara: XX-XXX-XXX o X-XXX-XXX dependiendo el largo
+    // Aplicar mÃ¡scara: XX-XXX-XXX o X-XXX-XXX dependiendo el largo
     let formattedValue = '';
     if (value.length > 0) {
       if (value.length <= 7) {
-        // Formato para 7 dígitos: X-XXX-XXX
+        // Formato para 7 dÃ­gitos: X-XXX-XXX
         if (value.length <= 1) {
           formattedValue = value;
         } else if (value.length <= 4) {
@@ -265,7 +265,7 @@ export default function Home() {
           formattedValue = value.slice(0, 1) + '-' + value.slice(1, 4) + '-' + value.slice(4);
         }
       } else {
-        // Formato para 8 dígitos: XX-XXX-XXX
+        // Formato para 8 dÃ­gitos: XX-XXX-XXX
         formattedValue = value.slice(0, 2) + '-' + value.slice(2, 5) + '-' + value.slice(5);
       }
     }
@@ -313,7 +313,7 @@ export default function Home() {
       if (registroError) throw registroError;
 
       // 2. Actualizar Ticket - Tabla 'tickets'
-      // Marcamos como usado y guardamos metadata de validación
+      // Marcamos como usado y guardamos metadata de validaciÃ³n
       const { error: ticketError } = await supabase
         .from('tickets')
         .update({
@@ -378,7 +378,7 @@ export default function Home() {
             </div>
             <div className="mb-12">
               <EpicSubtitle
-                text="¡DISFRUTÁ DE TU BENEFICIO EXCLUSIVO!"
+                text="Â¡DISFRUTÃ DE TU BENEFICIO EXCLUSIVO!"
                 className="text-[13px] md:text-4xl font-black block mb-4 tracking-tight md:tracking-tighter whitespace-nowrap"
                 delay={0.4}
               />
@@ -421,7 +421,7 @@ export default function Home() {
                 <div className="absolute inset-0 rounded-full border-2 border-yellow-300/80 group-hover:border-yellow-200 group-hover:shadow-[0_0_30px_rgba(255,215,0,0.5)] transition-all duration-300" />
                 {/* Efecto de profundidad */}
                 <div className="absolute inset-x-4 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent rounded-b-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="relative z-10 drop-shadow-sm tracking-tight">CANJEÁ TU CUPÓN</span>
+                <span className="relative z-10 drop-shadow-sm tracking-tight">CANJEÃ TU CUPÃ“N</span>
               </motion.button>
             </motion.div>
           </div>
@@ -446,13 +446,13 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.2em] block mb-3">Elegí tu ticket y activalo</span>
+            <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.2em] block mb-3">ElegÃ­ tu ticket y activalo</span>
             <h2 className="text-5xl md:text-6xl font-bold text-migusto-crema">
-              Convertite en <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">ANFITRIÓN </span><span className="whitespace-nowrap">Mi Gusto</span>
+              Convertite en <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">ANFITRIÃ“N </span><span className="whitespace-nowrap">Mi Gusto</span>
             </h2>
           </motion.div>
 
-          {/* Botones ORO, PLATA, BRONCE - diseño moderno e innovador */}
+          {/* Botones ORO, PLATA, BRONCE - diseÃ±o moderno e innovador */}
           <div id="botones-tickets" className="flex justify-center items-center gap-3 md:gap-7 mb-12 md:mb-20 relative px-2 scroll-mt-24">
             {(['oro', 'plata', 'bronce'] as TicketTier[]).map((tier, idx) => (
               <motion.button
@@ -601,7 +601,7 @@ export default function Home() {
                 >
                   <div className="flex items-center justify-center gap-3 mb-1">
                     <CheckCircle2 className="w-6 h-6 text-green-200" />
-                    <h4 className="text-xl font-black uppercase tracking-widest">¡Registro Exitoso!</h4>
+                    <h4 className="text-xl font-black uppercase tracking-widest">Â¡Registro Exitoso!</h4>
                   </div>
                   <p className="text-sm font-medium opacity-90">Tu ticket ha sido activado correctamente.</p>
                 </motion.div>
@@ -609,7 +609,7 @@ export default function Home() {
             </AnimatePresence>
 
 
-            {/* Inputs eliminados, ahora están dentro de la tarjeta */}
+            {/* Inputs eliminados, ahora estÃ¡n dentro de la tarjeta */}
 
             {/* Molde de tarjeta flipeable - placeholder para CodePen */}
             <AnimatePresence>
@@ -624,11 +624,11 @@ export default function Home() {
             </AnimatePresence>
 
             <motion.div
-                animate={{
-                  scale: isIdFocused ? 1.05 : 1,
-                  y: isIdFocused ? -230 : 0,
-                  zIndex: isIdFocused ? 50 : 1
-                }}
+               animate={{
+                 scale: isIdFocused ? 1.08 : 1,
+                 y: isIdFocused ? -150 : 0,
+                 zIndex: isIdFocused ? 50 : 1
+               }}
                className="relative z-50"
              >
                {/* Hint y Error reposicionados ARRIBA del ticket para que se vean al hacer zoom */}
@@ -653,7 +653,7 @@ export default function Home() {
                        exit={{ opacity: 0, y: -10 }}
                        className="text-amber-200/80 font-bold text-[10px] md:text-xs bg-black/20 backdrop-blur-sm px-4 py-1.5 rounded-full"
                      >
-                       Encontrá tu ID en el dorso del ticket
+                       EncontrÃ¡ tu ID en el dorso del ticket
                      </motion.p>
                    ) : null}
                  </AnimatePresence>
@@ -664,9 +664,9 @@ export default function Home() {
               <motion.div
                 animate={{
                   rotateY: isCardFlipped ? 180 : 0,
-                  
-                  
-                  
+                  scale: isIdFocused ? 1.08 : 1,
+                  y: isIdFocused ? -150 : 0,
+                  zIndex: isIdFocused ? 50 : 1
                 }}
                 onClick={() => {
                   if (isRegistered) {
@@ -701,7 +701,7 @@ export default function Home() {
                      filter: selectedTier ? 'grayscale(0) opacity(1)' : 'grayscale(1) opacity(0.5)',
                    }}
                  >
-                  {/* Overlay Confirmación removido en esta etapa */}
+                  {/* Overlay ConfirmaciÃ³n removido en esta etapa */}
 
                   {/* Mockup Overlay */}
                   <img
@@ -752,7 +752,7 @@ export default function Home() {
                 </div>
                 {/* 
                   CARA TRASERA (REGISTRO)
-                  Esta sección aparece automáticamente mediante un giro (rotateY(180deg))
+                  Esta secciÃ³n aparece automÃ¡ticamente mediante un giro (rotateY(180deg))
                   cuando el ID ingresado en el frente es validado correctamente.
                 */}
                  <div
@@ -778,7 +778,7 @@ export default function Home() {
                            : 'rgba(255, 255, 255, 0.1)',
                    }}
                  >
-                   {/* Header con Logo y Título - DORSO (Overlayed on Mockup if needed, or part of mockup) */}
+                   {/* Header con Logo y TÃ­tulo - DORSO (Overlayed on Mockup if needed, or part of mockup) */}
                    <div className="absolute top-[8%] left-[8%] right-[8%] flex justify-between items-start z-30 opacity-60">
                      <span className={`text-[10px] md:text-sm font-black uppercase tracking-widest ${selectedTier ? tierStyles[selectedTier].label : ''}`}>
                        Registro de Socio
@@ -888,7 +888,7 @@ export default function Home() {
                              animate={{ opacity: 1 }}
                              exit={{ opacity: 0 }}
                              type="email"
-                             placeholder="correo electrónico"
+                             placeholder="correo electrÃ³nico"
                              value={regEmail}
                              onChange={handleEmailChange}
                              className="w-full bg-transparent text-[10px] md:text-lg font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left lowercase"
@@ -907,13 +907,13 @@ export default function Home() {
                      </div>
                    </div>
 
-                   {/* Background overlay suave para la parte de atrás */}
+                   {/* Background overlay suave para la parte de atrÃ¡s */}
                    <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
                  </div>
               </motion.div>
             </div>
             
-
+             </div>
            </motion.div>
 
             {/* CONFIRMAR Button below the card (only when flipped and NOT registered) */}
@@ -964,7 +964,7 @@ export default function Home() {
               {[
                 { step: 1, text: 'Encontraste un ticket especial en tu pedido' },
                 { step: 2, text: 'Validamos ID y asociamos tu DNI al ticket' },
-                { step: 3, text: 'Disfrutá tu canje mensual' }
+                { step: 3, text: 'DisfrutÃ¡ tu canje mensual' }
               ].map(({ step, text }, idx) => (
                 <motion.div
                   key={step}
@@ -995,8 +995,8 @@ export default function Home() {
               </div>
               <div className="flex flex-col flex-1 justify-around gap-6">
                 {[
-                  { title: 'Personal e Intransferible', text: 'Solo válido para el titular registrado' },
-                  { title: 'Pérdida sin Reposición', text: 'No se emiten duplicados de tarjeta' },
+                  { title: 'Personal e Intransferible', text: 'Solo vÃ¡lido para el titular registrado' },
+                  { title: 'PÃ©rdida sin ReposiciÃ³n', text: 'No se emiten duplicados de tarjeta' },
                   { title: 'No Acumulable', text: 'Un premio por persona' },
                   { title: 'Canje Mensual', text: 'Un pack de 12 empanadas por mes' }
                 ].map((item, idx) => (
