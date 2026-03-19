@@ -12,7 +12,7 @@ interface Star {
 
 const GoldenStars: React.FC = () => {
     const stars = useMemo(() => {
-        const starCount = 300; // Even more stars
+        const starCount = 80; // Cantidad óptima y menos saturada para un Viewport fijo
         const generatedStars: Star[] = [];
 
         for (let i = 0; i < starCount; i++) {
@@ -31,7 +31,7 @@ const GoldenStars: React.FC = () => {
     }, []);
 
     return (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden z-[5]">
+        <div className="fixed inset-0 pointer-events-none overflow-hidden z-[5]">
             {stars.map((star) => (
                 <div
                     key={star.id}
