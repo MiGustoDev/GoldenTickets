@@ -343,7 +343,7 @@ export default function Home() {
             <div className="mb-12">
               <EpicSubtitle
                 text="¡DISFRUTÁ DE TU BENEFICIO EXCLUSIVO!"
-                className="text-xl md:text-4xl font-black block mb-4 tracking-tight md:tracking-tighter"
+                className="text-[13px] md:text-4xl font-black block mb-4 tracking-tight md:tracking-tighter whitespace-nowrap"
                 delay={0.4}
               />
             </div>
@@ -396,7 +396,7 @@ export default function Home() {
       <motion.section
         ref={rewardsRef}
         id="niveles-premios"
-        className="relative py-28 px-4 overflow-hidden scroll-mt-24"
+        className="relative py-6 md:py-28 px-4 overflow-hidden scroll-mt-24"
       >
         {/* Fondo moderno - mesh gradient + grid sutil con Parallax */}
         <motion.div style={{ y: yGrid }} className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent" />
@@ -412,7 +412,7 @@ export default function Home() {
           >
             <span className="text-xs font-black text-amber-400/80 uppercase tracking-[0.2em] block mb-3">Elegí tu ticket y activalo</span>
             <h2 className="text-5xl md:text-6xl font-bold text-migusto-crema">
-              Convertite en <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">ANFITRIÓN </span> Mi Gusto
+              Convertite en <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 bg-clip-text text-transparent italic leading-[1.2]">ANFITRIÓN </span><span className="whitespace-nowrap">Mi Gusto</span>
             </h2>
           </motion.div>
 
