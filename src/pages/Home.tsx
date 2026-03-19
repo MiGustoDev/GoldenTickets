@@ -439,7 +439,7 @@ export default function Home() {
         <motion.div style={{ y: yGrid }} className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-amber-500/5 rounded-full blur-[120px] animate-glow-pulse" />
 
-        <motion.div style={{ y: yContentBase }} className="container mx-auto max-w-5xl scale-[1.15] origin-top pb-8 relative z-10">
+        <motion.div style={{ y: yContentBase }} className="container mx-auto max-w-5xl scale-100 md:scale-100 origin-top pb-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -453,7 +453,7 @@ export default function Home() {
           </motion.div>
 
           {/* Botones ORO, PLATA, BRONCE - diseño moderno e innovador */}
-          <div id="botones-tickets" className="flex justify-center items-center gap-3 md:gap-7 mb-12 md:mb-20 relative px-2 scroll-mt-24">
+          <div id="botones-tickets" className="flex justify-center items-center gap-3 md:gap-7 mb-8 md:mb-10 relative px-2 scroll-mt-24">
             {(['oro', 'plata', 'bronce'] as const).map((tier, idx) => (
               <motion.button
                 key={tier}
@@ -476,8 +476,8 @@ export default function Home() {
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
                 whileHover={(!isCardFlipped && !isRegistered) ? { scale: 1.1, y: -12 } : {}}
                 whileTap={(!isCardFlipped && !isRegistered) ? { scale: 0.95 } : {}}
-                className={`group relative flex flex-col items-center rounded-3xl md:rounded-[2.5rem] 
-                  w-32 md:w-72 p-6 md:p-14
+                className={`group relative flex flex-col items-center rounded-3xl md:rounded-[2rem] 
+                  w-32 md:w-64 p-6 md:p-10
                   overflow-hidden transition-all duration-700 premium-border ${(isCardFlipped || isRegistered) ? 'opacity-40 grayscale-[0.5] cursor-not-allowed' : ''} ${selectedTier === tier
                     ? `animate-float ${tierStyles[tier].shadow} bg-gradient-to-br ${tierStyles[tier].gradient} border-2 ${tierStyles[tier].border}`
                     : 'bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/30'
@@ -493,19 +493,19 @@ export default function Home() {
                   <div className="absolute -inset-10 bg-gradient-to-br from-white/10 via-transparent to-white/10 opacity-30 animate-rotate-slow pointer-events-none" />
                 )}
 
-                <div className={`relative p-2 md:p-5 rounded-xl md:rounded-3xl mb-2 md:mb-4 transition-all duration-500 flex items-center justify-center ${selectedTier === tier
-                  ? `${tierStyles[tier].glow} shadow-[0_0_20px_rgba(255,255,255,0.2)] md:shadow-[0_0_30px_rgba(255,255,255,0.2)] scale-110`
+                <div className={`relative p-2 md:p-4 rounded-xl md:rounded-3xl mb-2 md:mb-4 transition-all duration-500 flex items-center justify-center ${selectedTier === tier
+                  ? `${tierStyles[tier].glow} shadow-[0_0_20px_rgba(255,255,255,0.2)] md:shadow-[0_0_25px_rgba(255,255,255,0.2)] scale-110`
                   : 'bg-white/5 group-hover:bg-white/10'
                   }`}>
                   <img
                     src={`${import.meta.env.BASE_URL}Logo Mi Gusto 2025.png`}
                     alt="Mi Gusto"
-                    className={`h-8 md:h-20 w-auto object-contain transition-all duration-500 brightness-200 contrast-125 ${selectedTier === tier ? 'drop-shadow-lg' : 'grayscale opacity-40 group-hover:opacity-70 group-hover:grayscale-0'
+                    className={`h-8 md:h-16 w-auto object-contain transition-all duration-500 brightness-200 contrast-125 ${selectedTier === tier ? 'drop-shadow-lg' : 'grayscale opacity-40 group-hover:opacity-70 group-hover:grayscale-0'
                       }`}
                   />
                 </div>
 
-                <h3 className={`relative text-lg md:text-5xl font-black uppercase tracking-tight transition-all duration-500 ${selectedTier === tier
+                <h3 className={`relative text-lg md:text-4xl font-black uppercase tracking-tight transition-all duration-500 ${selectedTier === tier
                   ? 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]'
                   : 'text-white/40 group-hover:text-white/70'
                   }`}>
@@ -525,7 +525,7 @@ export default function Home() {
           </div>
 
           {/* Premium Benefit Projection - Espacio entre botones y ticket */}
-          <div className="h-32 md:h-48 flex flex-col items-center justify-center relative overflow-visible mb-8">
+          <div className="h-32 md:h-36 flex flex-col items-center justify-center relative overflow-visible mb-8">
             <AnimatePresence mode="wait">
               {selectedTier && (
                 <motion.div
@@ -542,14 +542,14 @@ export default function Home() {
                     <motion.span
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="text-amber-400 font-black uppercase tracking-[0.15em] md:tracking-[0.3em] text-[10px] md:text-xl mb-1 md:mb-3 drop-shadow-md text-center max-w-[280px] md:max-w-none"
+                      className="text-amber-400 font-black uppercase tracking-[0.15em] md:tracking-[0.3em] text-[10px] md:text-lg mb-1 md:mb-2 drop-shadow-md text-center max-w-[280px] md:max-w-none"
                     >
                       Un pack de 12 empanadas gratis por mes
                     </motion.span>
                     <motion.div
                       initial={{ opacity: 0, filter: 'blur(15px)', y: -10 }}
                       animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-                      className="text-4xl md:text-8xl font-black text-white uppercase tracking-tighter text-center"
+                      className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter text-center"
                       style={{ 
                         textShadow: '0 0 20px rgba(255,255,255,0.4), 0 0 40px rgba(251,191,36,0.3)',
                         fontFamily: 'Outfit, sans-serif'
@@ -631,33 +631,6 @@ export default function Home() {
                 }}
                className="relative z-50"
              >
-               {/* Hint y Error reposicionados ARRIBA del ticket para que se vean al hacer zoom */}
-               <div className="relative z-50 mb-4 px-4 min-h-[40px] flex flex-col items-center justify-end font-black uppercase tracking-wider text-center">
-                 <AnimatePresence mode="wait">
-                   {idError ? (
-                     <motion.div
-                       key="error"
-                       initial={{ opacity: 0, y: 10 }}
-                       animate={{ opacity: 1, y: 0 }}
-                       exit={{ opacity: 0, y: -10 }}
-                     >
-                       <p className="text-red-500 text-xs md:text-sm bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-red-500/30 drop-shadow-lg">
-                         {idError}
-                       </p>
-                     </motion.div>
-                   ) : showIdHint ? (
-                     <motion.p
-                       key="hint"
-                       initial={{ opacity: 0, y: 10 }}
-                       animate={{ opacity: 1, y: 0 }}
-                       exit={{ opacity: 0, y: -10 }}
-                       className="text-amber-200/80 font-bold text-[10px] md:text-xs bg-black/20 backdrop-blur-sm px-4 py-1.5 rounded-full"
-                     >
-                        Encontrá tu ID en el dorso del ticket
-                     </motion.p>
-                   ) : null}
-                 </AnimatePresence>
-               </div>
                <div
                  className="perspective-[1000px] relative"
                >
@@ -923,6 +896,34 @@ export default function Home() {
             
 
            </motion.div>
+
+               {/* Hint y Error reposicionados DEBAJO del ticket */}
+               <div className="relative z-50 mt-4 px-4 min-h-[40px] flex flex-col items-center justify-start font-black uppercase tracking-wider text-center">
+                 <AnimatePresence mode="wait">
+                   {idError ? (
+                     <motion.div
+                       key="error"
+                       initial={{ opacity: 0, y: -10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       exit={{ opacity: 0, y: 10 }}
+                     >
+                       <p className="text-red-500 text-xs md:text-sm bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-red-500/30 drop-shadow-lg">
+                         {idError}
+                       </p>
+                     </motion.div>
+                   ) : showIdHint ? (
+                     <motion.p
+                       key="hint"
+                       initial={{ opacity: 0, y: -10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       exit={{ opacity: 0, y: 10 }}
+                       className="text-amber-200/80 font-bold text-[10px] md:text-xs bg-black/20 backdrop-blur-sm px-4 py-1.5 rounded-full"
+                     >
+                        Encontrá tu ID en el dorso del ticket
+                     </motion.p>
+                   ) : null}
+                 </AnimatePresence>
+               </div>
 
             {/* CONFIRMAR Button below the card (only when flipped and NOT registered) */}
             <AnimatePresence>
