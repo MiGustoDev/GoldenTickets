@@ -13,7 +13,7 @@ import { supabase } from '../lib/supabase';
 
 // --- CONFIGURACIÓN DE DATOS ---
 
-type TicketTier = 'oro' | 'plata' | 'bronce' | null;
+type TicketTier = 'oro' | 'plata' | 'bronce';
 
 const tierStyles = {
   oro: {
@@ -46,7 +46,7 @@ const tierStyles = {
 };
 
 export default function Home() {
-  const [selectedTier, setSelectedTier] = useState<TicketTier>(null);
+  const [selectedTier, setSelectedTier] = useState<TicketTier | null>(null);
   const [ticketId, setTicketId] = useState('');
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [idError, setIdError] = useState<string | null>(null);
@@ -454,7 +454,7 @@ export default function Home() {
 
           {/* Botones ORO, PLATA, BRONCE - diseño moderno e innovador */}
           <div id="botones-tickets" className="flex justify-center items-center gap-3 md:gap-7 mb-12 md:mb-20 relative px-2 scroll-mt-24">
-            {(['oro', 'plata', 'bronce'] as TicketTier[]).map((tier, idx) => (
+            {(['oro', 'plata', 'bronce'] as const).map((tier, idx) => (
               <motion.button
                 key={tier}
                 type="button"
@@ -939,7 +939,7 @@ export default function Home() {
                     disabled={!isFormValid || isSubmitting}
                     whileHover={(isFormValid && !isSubmitting) ? { scale: 1.05 } : {}}
                     whileTap={(isFormValid && !isSubmitting) ? { scale: 0.95 } : {}}
-                    className={`px-8 py-3 rounded-full text-base font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl relative ${(!isFormValid || isSubmitting)
+                    className={`px-8 py-3 rounded-full text-base font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl relative ${(!isFormValid || isSubmitting || !selectedTier)
                       ? 'bg-white/5 text-white/20 cursor-not-allowed grayscale'
                       : `bg-gradient-to-br ${tierStyles[selectedTier].gradient} text-white shadow-[0_10px_40px_rgba(0,0,0,0.4)]`
                       }`}
