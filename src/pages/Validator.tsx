@@ -115,13 +115,6 @@ export default function Validator() {
     <div className="min-h-screen py-12 px-4 relative overflow-hidden">
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center mb-16">
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="inline-flex p-5 rounded-3xl bg-migusto-rojo/10 border border-migusto-rojo/20 mb-6"
-          >
-            <Shield className="h-14 w-14 text-migusto-rojo" />
-          </motion.div>
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 text-migusto-crema tracking-tight">
             Validador de <span className="text-migusto-rojo italic">Sucursal</span>
           </h1>
