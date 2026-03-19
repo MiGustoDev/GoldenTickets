@@ -707,7 +707,7 @@ export default function Home() {
                             onFocus={() => setIsIdFocused(true)}
                             onBlur={() => setIsIdFocused(false)}
                             disabled={!selectedTier || isValidating}
-                            className={`w-full bg-transparent text-[12px] md:text-[24px] font-black font-mono placeholder:text-black/40 focus:outline-none tracking-normal transition-colors text-center shadow-none border-none ${!selectedTier ? 'cursor-not-allowed' : ''} ${isValidating ? 'animate-pulse opacity-50' : ''}`}
+                            className={`w-full bg-transparent text-[16px] md:text-[24px] font-black font-mono placeholder:text-black/40 focus:outline-none tracking-normal transition-colors text-center shadow-none border-none ${!selectedTier ? 'cursor-not-allowed' : ''} ${isValidating ? 'animate-pulse opacity-50' : ''}`}
                           />
                         ) : (
                           <motion.span
@@ -811,7 +811,7 @@ export default function Home() {
                               onFocus={() => setIsIdFocused(true)}
                               onBlur={() => setIsIdFocused(false)}
                                maxLength={12}
-                               className="w-full bg-transparent text-sm md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
+                               className="w-full bg-transparent text-[16px] md:text-[22px] font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-left"
                              />
                            ) : (
                              <motion.span
@@ -842,7 +842,7 @@ export default function Home() {
                               onFocus={() => setIsIdFocused(true)}
                               onBlur={() => setIsIdFocused(false)}
                                maxLength={10}
-                               className="w-full bg-transparent text-sm md:text-2xl font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-right"
+                               className="w-full bg-transparent text-[16px] md:text-[22px] font-black font-mono text-white placeholder:text-white/20 focus:outline-none tracking-tighter text-right"
                              />
                            ) : (
                              <motion.span
