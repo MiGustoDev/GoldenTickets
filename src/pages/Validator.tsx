@@ -2,108 +2,166 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { CheckCircle2, XCircle, Loader2, Shield, AlertTriangle, Ticket } from 'lucide-react';
-import { supabase, type Ticket as TicketData } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
-type ValidatorForm = {
-  dni: string;
-  id_ticket: string;
-};
-
-type ValidationResult = {
+type ValidatorResult = {
   success: boolean;
   message: string;
-  ticket?: TicketData;
+  nombre?: string;
+  apellido?: string;
+  tipo?: 'BRONCE' | 'PLATA' | 'ORO';
+  meses?: number;
+  fecha_registro?: string;
+  ya_canjeado_este_mes?: boolean;
+  ultima_fecha_canje?: string;
+  id_registro?: string;
+  expirado?: boolean;
+};
+
+type RecentCanje = {
+  id: string;
+  fecha_canje: string;
+  registros: {
+    nombre: string;
+    apellido: string;
+    dni: string;
+    tickets: {
+      tipo: string;
+    };
+  };
 };
 
 export default function Validator() {
-  const [validatedTickets, setValidatedTickets] = useState<TicketData[]>([]);
+  const [recentCanjes, setRecentCanjes] = useState<RecentCanje[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [validationResult, setValidationResult] = useState<ValidatorResult | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<ValidatorForm>();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<{ dni: string }>();
 
   useEffect(() => {
-    document.title = "Mi Gusto | Ticket System";
-    loadValidatedTickets();
-
-    // Opcionalmente restaurar el título al salir si es necesario
-    return () => {
-      document.title = "Mi Gusto | Ticket Ganador";
-    };
+    document.title = "Mi Gusto | Validador de Sucursal";
+    loadRecentCanjes();
   }, []);
 
-  const loadValidatedTickets = async () => {
+  const loadRecentCanjes = async () => {
     const { data, error } = await supabase
-      .from('tickets')
-      .select('*')
-      .eq('usado', true)
-      .order('fecha_validacion', { ascending: false });
+      .from('canjes')
+      .select(`
+        id,
+        fecha_canje,
+        registros (
+          nombre,
+          apellido,
+          dni,
+          tickets (
+            tipo
+          )
+        )
+      `)
+      .order('fecha_canje', { ascending: false })
+      .limit(10);
 
     if (!error && data) {
-      setValidatedTickets(data);
+      setRecentCanjes(data as any);
     }
   };
 
-  const onSubmit = async (data: ValidatorForm) => {
+  const onSubmit = async (data: { dni: string }) => {
     setIsLoading(true);
     setValidationResult(null);
 
     try {
-      const { data: ticket, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .eq('id_ticket', data.id_ticket)
+      // 1. Buscamos el registro activo por DNI
+      const { data: registro, error: regError } = await supabase
+        .from('registros')
+        .select('id, id_ticket, nombre, apellido, fecha_registro, activo')
+        .eq('dni', data.dni)
+        .eq('activo', true)
         .maybeSingle();
 
-      if (error) {
-        setValidationResult({
-          success: false,
-          message: 'Error al validar el ticket. Intente nuevamente.'
-        });
-      } else if (!ticket) {
-        setValidationResult({
-          success: false,
-          message: 'Ticket inválido. El ID no existe en el sistema.'
-        });
-      } else if (ticket.usado) {
-        setValidationResult({
-          success: false,
-          message: `Ticket ya usado. Fue validado el ${new Date(ticket.fecha_validacion!).toLocaleDateString()} con DNI ${ticket.dni_validado}.`
-        });
-      } else {
-        const { error: updateError } = await supabase
-          .from('tickets')
-          .update({
-            usado: true,
-            dni_validado: data.dni,
-            fecha_validacion: new Date().toISOString()
-          })
-          .eq('id_ticket', data.id_ticket);
+      if (regError) throw regError;
 
-        if (updateError) {
-          setValidationResult({
-            success: false,
-            message: 'Error al actualizar el ticket. Intente nuevamente.'
-          });
-        } else {
-          setValidationResult({
-            success: true,
-            message: `Válido: ${ticket.tipo} - ${ticket.meses} meses. Listo para registro.`,
-            ticket
-          });
-          loadValidatedTickets();
-        }
+      if (!registro) {
+        setValidationResult({
+          success: false,
+          message: 'DNI no encontrado o beneficio inactivo.'
+        });
+        setShowModal(true);
+        return;
       }
 
+      // 2. Buscamos el tipo de ticket y su vigencia
+      const { data: ticket, error: ticketError } = await supabase
+        .from('tickets')
+        .select('tipo, meses')
+        .eq('id_ticket', registro.id_ticket)
+        .single();
+
+      if (ticketError) throw ticketError;
+
+      // 3. Verificamos expiración
+      const fechaRegistro = new Date(registro.fecha_registro);
+      const fechaExpiracion = new Date(fechaRegistro);
+      fechaExpiracion.setMonth(fechaExpiracion.getMonth() + (ticket.meses || 0));
+      const expirado = new Date() > fechaExpiracion;
+
+      // 4. Verificamos canje de este mes
+      const primerDiaMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+      const { data: canje, error: canjeError } = await supabase
+        .from('canjes')
+        .select('fecha_canje')
+        .eq('id_registro', registro.id)
+        .gte('fecha_canje', primerDiaMes)
+        .maybeSingle();
+
+      if (canjeError) throw canjeError;
+
+      setValidationResult({
+        success: true,
+        message: expirado ? 'Beneficio expirado.' : 'Beneficio localizado.',
+        nombre: registro.nombre,
+        apellido: registro.apellido,
+        tipo: ticket.tipo,
+        meses: ticket.meses,
+        fecha_registro: registro.fecha_registro,
+        ya_canjeado_este_mes: !!canje,
+        ultima_fecha_canje: canje?.fecha_canje,
+        id_registro: registro.id,
+        expirado
+      });
       setShowModal(true);
       reset();
     } catch (err) {
       setValidationResult({
         success: false,
-        message: 'Error inesperado. Intente nuevamente.'
+        message: 'Error inesperado al consultar. Intente nuevamente.'
       });
       setShowModal(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRegisterCanje = async () => {
+    if (!validationResult?.id_registro) return;
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('canjes')
+        .insert([{ id_registro: validationResult.id_registro }]);
+
+      if (error) throw error;
+
+      setValidationResult({
+        ...validationResult,
+        ya_canjeado_este_mes: true,
+        ultima_fecha_canje: new Date().toISOString()
+      });
+      loadRecentCanjes();
+    } catch (err) {
+      alert('Error registrando canje. Reintente.');
     } finally {
       setIsLoading(false);
     }
@@ -162,29 +220,13 @@ export default function Validator() {
                   type="text"
                   {...register('dni', {
                     required: 'DNI es requerido',
-                    pattern: { value: /^[0-9]+$/, message: 'Solo números' },
                     minLength: { value: 7, message: 'Mínimo 7 dígitos' }
                   })}
                   className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-dorado-bright/30 focus:border-migusto-dorado-bright hover:border-white/20 transition-all text-lg font-medium placeholder:text-white/10"
-                  placeholder="Sin puntos ni espacios"
+                  placeholder="Ingrese DNI del titular"
                 />
                 {errors.dni && (
                   <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-medium ml-1">{errors.dni.message}</motion.p>
-                )}
-              </div>
-
-              <div className="space-y-3">
-                <label className="block text-migusto-crema/70 text-sm font-bold uppercase tracking-widest ml-1">
-                  ID del Ticket
-                </label>
-                <input
-                  type="text"
-                  {...register('id_ticket', { required: 'ID del ticket es requerido' })}
-                  className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-dorado-bright/30 focus:border-migusto-dorado-bright hover:border-white/20 transition-all text-lg font-medium placeholder:text-white/10 uppercase"
-                  placeholder="Ej: ORO1-50"
-                />
-                {errors.id_ticket && (
-                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-medium ml-1">{errors.id_ticket.message}</motion.p>
                 )}
               </div>
 
@@ -198,11 +240,11 @@ export default function Validator() {
                 {isLoading ? (
                   <>
                     <Loader2 className="h-6 w-6 animate-spin" />
-                    <span>Procesando...</span>
+                    <span>Consultando...</span>
                   </>
                 ) : (
                   <>
-                    <span>Validar Ahora</span>
+                    <span>Consultar Beneficio</span>
                     <Shield className="h-6 w-6 group-hover:rotate-12 transition-transform" />
                   </>
                 )}
@@ -225,47 +267,41 @@ export default function Validator() {
             </div>
 
             <div className="space-y-6 overflow-y-auto pr-4 custom-scrollbar flex-grow">
-              {validatedTickets.length === 0 ? (
+              {recentCanjes.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 opacity-20 text-center">
                   <Ticket className="h-16 w-16 mb-4" />
-                  <p className="text-lg font-bold uppercase tracking-tighter">No hay validaciones registradas</p>
+                  <p className="text-lg font-bold uppercase tracking-tighter">No hay canjes registrados hoy</p>
                 </div>
               ) : (
-                validatedTickets.map((ticket: TicketData) => (
+                recentCanjes.map((canje) => (
                   <motion.div
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    key={ticket.id_ticket}
+                    key={canje.id}
                     className="relative p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all group overflow-hidden"
                   >
-                    <div className={`absolute top-0 right-0 w-32 h-32 blur-3xl opacity-10 rounded-full -translate-y-1/2 translate-x-1/2 ${ticket.tipo === 'ORO' ? 'bg-migusto-oro' : ticket.tipo === 'PLATA' ? 'bg-migusto-plata' : 'bg-migusto-bronce'
-                      }`}></div>
-
                     <div className="flex items-center justify-between mb-4 relative z-10">
-                      <span className="font-black text-2xl tracking-tighter text-migusto-crema">{ticket.id_ticket}</span>
-                      <span className={`px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border ${ticket.tipo === 'ORO' ? 'bg-migusto-oro/20 text-migusto-oro border-migusto-oro/30' :
-                        ticket.tipo === 'PLATA' ? 'bg-migusto-plata/20 text-migusto-plata border-migusto-plata/30' :
+                      <span className="font-black text-xl tracking-tighter text-migusto-crema">
+                        {canje.registros?.nombre} {canje.registros?.apellido}
+                      </span>
+                      <span className={`px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border ${canje.registros?.tickets?.tipo === 'ORO' ? 'bg-migusto-oro/20 text-migusto-oro border-migusto-oro/30' :
+                        canje.registros?.tickets?.tipo === 'PLATA' ? 'bg-migusto-plata/20 text-migusto-plata border-migusto-plata/30' :
                           'bg-migusto-bronce/20 text-migusto-bronce border-migusto-bronce/30'
                         }`}>
-                        {ticket.tipo}
+                        {canje.registros?.tickets?.tipo}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-xs relative z-10">
                       <div className="space-y-1">
-                        <p className="text-white/30 uppercase tracking-widest font-bold">DNI Cliente</p>
-                        <p className="text-migusto-crema font-bold">{ticket.dni_validado}</p>
+                        <p className="text-white/30 uppercase tracking-widest font-bold">DNI</p>
+                        <p className="text-migusto-crema font-bold">{canje.registros?.dni}</p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-white/30 uppercase tracking-widest font-bold">Vigencia</p>
-                        <p className="text-migusto-crema font-bold">{ticket.meses} Meses</p>
-                      </div>
-                      <div className="col-span-2 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                          <span className="text-[10px] text-white/40 font-bold uppercase">{new Date(ticket.fecha_validacion!).toLocaleDateString()}</span>
-                        </div>
-                        <Ticket className="h-4 w-4 text-white/10 group-hover:text-migusto-rojo/30 transition-colors" />
+                        <p className="text-white/30 uppercase tracking-widest font-bold">Hora</p>
+                        <p className="text-migusto-crema font-bold">
+                          {new Date(canje.fecha_canje).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                        </p>
                       </div>
                     </div>
                   </motion.div>
@@ -286,24 +322,73 @@ export default function Validator() {
           >
             <div className="flex flex-col items-center text-center relative z-10">
               {validationResult.success ? (
-                <div className="w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-6">
-                  <CheckCircle2 className="h-12 w-12 text-emerald-500" />
-                </div>
+                <>
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${validationResult.expirado ? 'bg-red-500/10' : 'bg-emerald-500/10'}`}>
+                    {validationResult.expirado ? <XCircle className="h-10 w-10 text-red-500" /> : <CheckCircle2 className="h-10 w-10 text-emerald-500" />}
+                  </div>
+                  <h3 className="text-4xl font-serif font-bold text-migusto-crema mb-2">{validationResult.expirado ? 'Beneficio Expirado' : 'Beneficio Activo'}</h3>
+                  <p className="text-migusto-dorado-bright text-2xl font-black uppercase tracking-widest mb-6">
+                    {validationResult.nombre} {validationResult.apellido}
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-6 w-full mb-8">
+                    <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                      <p className="text-xs text-white/30 uppercase font-black mb-1 tracking-widest">Fecha Registro</p>
+                      <p className="text-lg font-bold">{new Date(validationResult.fecha_registro!).toLocaleDateString()}</p>
+                    </div>
+                    <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                      <p className="text-xs text-white/30 uppercase font-black mb-1 tracking-widest">Categoría</p>
+                      <p className="text-lg font-bold text-migusto-dorado-bright">{validationResult.tipo}</p>
+                    </div>
+                  </div>
+
+                  {!validationResult.expirado && (
+                    <div className="w-full mb-8">
+                      {validationResult.ya_canjeado_este_mes ? (
+                        <div className="bg-red-500/10 border-2 border-red-500/30 p-6 rounded-2xl">
+                          <p className="text-red-500 font-black uppercase text-lg mb-2">Ya retiró este mes</p>
+                          <p className="text-sm text-white/60">
+                            Último canje: <span className="text-white font-bold">{new Date(validationResult.ultima_fecha_canje!).toLocaleString('es-AR', { hour12: false })}</span>
+                          </p>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={handleRegisterCanje}
+                          disabled={isLoading}
+                          className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-4 rounded-2xl font-black uppercase tracking-widest transition-all shadow-lg flex items-center justify-center space-x-3"
+                        >
+                          {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
+                            <>
+                              <span>Entregar Pack 12u</span>
+                              <CheckCircle2 className="h-5 w-5" />
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="text-white/60 hover:text-white text-base font-bold uppercase tracking-widest transition-colors py-4 px-8"
+                  >
+                    CERRAR CONSULTA
+                  </button>
+                </>
               ) : (
-                <div className="w-24 h-24 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-6">
-                  <XCircle className="h-12 w-12 text-red-400" />
-                </div>
+                <>
+                  <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
+                    <XCircle className="h-10 w-10 text-red-400" />
+                  </div>
+                  <h3 className="text-2xl font-serif font-bold text-migusto-crema mb-4">{validationResult.message}</h3>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="w-full bg-white/10 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-white/20 transition-all shadow-premium"
+                  >
+                    Entendido
+                  </button>
+                </>
               )}
-              <h3 className="text-3xl font-serif font-bold text-migusto-crema mb-4 tracking-tight">
-                {validationResult.success ? '¡Validación Existosa!' : 'Error de Validación'}
-              </h3>
-              <p className="text-migusto-crema/60 mb-10 leading-relaxed text-lg italic">{validationResult.message}</p>
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-full bg-migusto-rojo text-white py-5 rounded-2xl font-black text-xl hover:bg-migusto-rojo-claro transition-all shadow-premium"
-              >
-                Continuar
-              </button>
             </div>
             {/* Background dynamic light */}
             <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 blur-[80px] opacity-20 rounded-full ${validationResult.success ? 'bg-emerald-500' : 'bg-red-500'
