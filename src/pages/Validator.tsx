@@ -36,8 +36,9 @@ export default function Validator() {
   const [isLoading, setIsLoading] = useState(false);
   const [validationResult, setValidationResult] = useState<ValidatorResult | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [dniValue, setDniValue] = useState('');
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<{ dni: string }>();
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<{ dni: string }>();
 
   useEffect(() => {
     document.title = "Mi Gusto | Validador de Sucursal";
@@ -71,12 +72,15 @@ export default function Validator() {
     setIsLoading(true);
     setValidationResult(null);
 
+    // Limpiamos los guiones para buscar en la base de datos
+    const dniLimpio = data.dni.replace(/\D/g, '');
+
     try {
-      // 1. Buscamos el registro activo por DNI
+      // 1. Buscamos el registro activo (probamos DNI limpio y con formato por si acaso)
       const { data: registro, error: regError } = await supabase
         .from('registros')
         .select('id, id_ticket, nombre, apellido, fecha_registro, activo')
-        .eq('dni', data.dni)
+        .or(`dni.eq.${dniLimpio},dni.eq.${data.dni}`)
         .eq('activo', true)
         .maybeSingle();
 
@@ -132,6 +136,7 @@ export default function Validator() {
       });
       setShowModal(true);
       reset();
+      setDniValue('');
     } catch (err) {
       setValidationResult({
         success: false,
@@ -141,6 +146,25 @@ export default function Validator() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDniChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 8) value = value.slice(0, 8);
+
+    let formattedValue = '';
+    if (value.length > 0) {
+      if (value.length <= 7) {
+        if (value.length <= 1) formattedValue = value;
+        else if (value.length <= 4) formattedValue = value.slice(0, 1) + '-' + value.slice(1);
+        else formattedValue = value.slice(0, 1) + '-' + value.slice(1, 4) + '-' + value.slice(4);
+      } else {
+        formattedValue = value.slice(0, 2) + '-' + value.slice(2, 5) + '-' + value.slice(5);
+      }
+    }
+
+    setDniValue(formattedValue);
+    setValue('dni', formattedValue, { shouldValidate: true });
   };
 
   const handleRegisterCanje = async () => {
@@ -164,6 +188,15 @@ export default function Validator() {
       alert('Error registrando canje. Reintente.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getTierColor = (tier?: string) => {
+    switch (tier) {
+      case 'ORO': return 'text-migusto-oro';
+      case 'PLATA': return 'text-migusto-plata';
+      case 'BRONCE': return 'text-migusto-bronce';
+      default: return 'text-migusto-dorado-bright';
     }
   };
 
@@ -218,12 +251,14 @@ export default function Validator() {
                 </label>
                 <input
                   type="text"
+                  value={dniValue}
                   {...register('dni', {
                     required: 'DNI es requerido',
-                    minLength: { value: 7, message: 'Mínimo 7 dígitos' }
+                    minLength: { value: 9, message: 'DNI incompleto' }
                   })}
+                  onChange={handleDniChange}
                   className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-migusto-crema focus:outline-none focus:ring-2 focus:ring-migusto-dorado-bright/30 focus:border-migusto-dorado-bright hover:border-white/20 transition-all text-lg font-medium placeholder:text-white/10"
-                  placeholder="Ingrese DNI del titular"
+                  placeholder="Ingrese DNI (XX-XXX-XXX)"
                 />
                 {errors.dni && (
                   <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-sm font-medium ml-1">{errors.dni.message}</motion.p>
@@ -278,7 +313,8 @@ export default function Validator() {
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     key={canje.id}
-                    className="relative p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all group overflow-hidden"
+                    onClick={() => onSubmit({ dni: canje.registros.dni })}
+                    className="relative p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-amber-500/50 hover:bg-white/10 transition-all group overflow-hidden cursor-pointer"
                   >
                     <div className="flex items-center justify-between mb-4 relative z-10">
                       <span className="font-black text-xl tracking-tighter text-migusto-crema">
@@ -338,7 +374,7 @@ export default function Validator() {
                     </div>
                     <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
                       <p className="text-xs text-white/30 uppercase font-black mb-1 tracking-widest">Categoría</p>
-                      <p className="text-lg font-bold text-migusto-dorado-bright">{validationResult.tipo}</p>
+                      <p className={`text-lg font-bold ${getTierColor(validationResult.tipo)}`}>{validationResult.tipo}</p>
                     </div>
                   </div>
 

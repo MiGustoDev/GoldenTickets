@@ -60,8 +60,6 @@ export default function Home() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccessfullyConfirmed, setIsSuccessfullyConfirmed] = useState(false);
-  const [showIdHint, setShowIdHint] = useState(false);
-  const hintTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
 
   // --- SCROLL TO HASH OR SESSION STORAGE ---
@@ -481,10 +479,8 @@ export default function Home() {
                   setIdError(null);
                   document.getElementById('botones-tickets')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   
-                  // Mostrar leyenda de ID por 5 segundos
-                  if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
-                  setShowIdHint(true);
-                  hintTimeoutRef.current = setTimeout(() => setShowIdHint(false), 5000);
+                  // Limpiar errores previos al cambiar de categoría
+                  setIdError(null);
                 }}
                 disabled={isCardFlipped || isRegistered}
                 initial={{ opacity: 0, y: 40 }}
@@ -634,7 +630,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/80 backdrop-blur-xl z-40 pointer-events-none"
+                  className="fixed inset-0 bg-black/20 backdrop-blur-md z-40 pointer-events-none"
                 />
               )}
             </AnimatePresence>
@@ -914,7 +910,7 @@ export default function Home() {
            </motion.div>
 
                {/* Hint y Error reposicionados DEBAJO del ticket */}
-               <div className="relative z-50 mt-4 px-4 min-h-[40px] flex flex-col items-center justify-start font-black uppercase tracking-wider text-center">
+               <div className="relative z-[60] mt-4 px-4 min-h-[40px] flex flex-col items-center justify-start font-black uppercase tracking-wider text-center">
                  <AnimatePresence mode="wait">
                    {idError ? (
                      <motion.div
@@ -927,7 +923,7 @@ export default function Home() {
                          {idError}
                        </p>
                      </motion.div>
-                   ) : showIdHint ? (
+                   ) :  (selectedTier && !isCardFlipped && !isRegistered)  ? (
                      <motion.p
                        key="hint"
                        initial={{ opacity: 0, y: -10 }}
@@ -948,17 +944,17 @@ export default function Home() {
                   initial={{ opacity: 0, scale: 0.9, y: 10 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                  className="mt-10 flex flex-col items-center relative"
+                  className="mt-10 flex flex-col items-center relative z-[70]"
                 >
                   <motion.button
                     type="button"
                     onClick={handleConfirmClick}
                     disabled={!isFormValid || isSubmitting}
-                    whileHover={(isFormValid && !isSubmitting) ? { scale: 1.05 } : {}}
+                    whileHover={(isFormValid && !isSubmitting) ? { scale: 1.05, boxShadow: '0 0 50px rgba(251,191,36,0.4)' } : {}}
                     whileTap={(isFormValid && !isSubmitting) ? { scale: 0.95 } : {}}
-                    className={`px-8 py-3 rounded-full text-base font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl relative ${(!isFormValid || isSubmitting || !selectedTier)
-                      ? 'bg-white/5 text-white/20 cursor-not-allowed grayscale'
-                      : `bg-gradient-to-br ${tierStyles[selectedTier].gradient} text-white shadow-[0_10px_40px_rgba(0,0,0,0.4)]`
+                    className={`px-10 py-4 rounded-full text-lg font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-2xl relative z-[71] ${(!isFormValid || isSubmitting || !selectedTier)
+                      ? 'bg-white/10 text-white/30 cursor-not-allowed border border-white/10'
+                      : `bg-gradient-to-br ${tierStyles[selectedTier].gradient} text-white shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 ${tierStyles[selectedTier].border}`
                       }`}
                   >
                     {isSubmitting ? (
